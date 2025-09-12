@@ -3,7 +3,7 @@ import Message from "./Message";
 
 const ProjectSchema = new Schema({
     timestamps: true,
-    author: {
+    user: {
         type: Schema.Types.ObjectId,
         ref: "User",
         required: true

@@ -2,7 +2,7 @@ import { Schema, model } from "mongoose";
 
 const TaskSchema = new Schema({
   timestamps: true,
-  author: {
+  user: {
     type: Schema.Types.ObjectId,
     ref: "User",
     required: true,

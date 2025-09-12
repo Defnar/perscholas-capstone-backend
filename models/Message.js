@@ -2,7 +2,7 @@ import {Schema, model} from "mongoose";
 
 const MessageSchema = new Schema({
     timestamps: true,
-    author: {
+    user: {
         type: Schema.Types.ObjectId,
         required: true
     },
