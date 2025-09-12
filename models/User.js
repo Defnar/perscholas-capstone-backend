@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 
 const UserSchema = new Schema(
   {
+    timestamps: true,
     username: {
       type: String,
       minLength: 6,
@@ -51,4 +52,6 @@ UserSchema.methods.isCorrectPassword = async function(password) {
     return await bcrypt.compare(password, this.password);
 }
 
-export const User = model("User", UserSchema);
+const User = model("User", UserSchema);
+
+export default User
