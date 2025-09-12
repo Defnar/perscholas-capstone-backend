@@ -1,4 +1,4 @@
-import { loggedOutRefresh } from "../../../../Project Chickens/backend/configs/loggedOutTokens";
+import { loggedOutRefresh } from "../config/loggedOutTokens"
 import jwt, { TokenExpiredError } from "jsonwebtoken";
 import { signToken } from "../utils/auth";
 
