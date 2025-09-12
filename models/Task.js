@@ -1,0 +1,34 @@
+import { Schema, model } from "mongoose";
+
+const TaskSchema = new Schema({
+  timestamps: true,
+  author: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  project: {
+    type: Schema.Types.ObjectId,
+    ref: "Project",
+    required: true,
+  },
+  title: {
+    type: String,
+    required: true,
+  },
+  description: {
+    type: String,
+  },
+  status: {
+    type: String,
+    enum: ["To Do", "In Progress", "Done", "Overdue", "Archived"],
+    required: true,
+    default: "To Do",
+  },
+  deadline: {
+    type: Date
+  }
+});
+
+const Task = model("Task", TaskSchema)
+export default Task;
