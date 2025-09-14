@@ -83,3 +83,17 @@ export const getProject = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+export const createProject = async (req, res) => {
+  if (!req.body)
+    return res.status(400).json({ message: "Body cannot be empty" });
+
+  try {
+    await Project.create(req.body);
+
+    res.status(201).json({ message: "project created successfully" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "internal server error" });
+  }
+};
