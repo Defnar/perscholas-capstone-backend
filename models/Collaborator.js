@@ -11,7 +11,7 @@ const CollaboratorSchema = new Schema({
     },
     permissions: [{
         type: String,
-        enum: ["get", "edit", "delete", "addTask", "editTasks", "deleteTask, archiveTasks"]
+        enum: ["getProject", "editProject", "deleteProject", "addTask", "editTasks", "deleteTask, archiveTasks"]
     }]
 })
 

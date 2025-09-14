@@ -65,3 +65,9 @@ export const getPrivateProjects = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
+
+export const getProject = (req, res) => {
+    if (!res.project) return res.status(403).json({message: "Unauthorized"})
+
+    res.send(res.project);
+}
