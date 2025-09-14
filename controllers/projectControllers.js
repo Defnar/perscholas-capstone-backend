@@ -89,9 +89,28 @@ export const createProject = async (req, res) => {
     return res.status(400).json({ message: "Body cannot be empty" });
 
   try {
-    await Project.create(req.body);
+    const project = await Project.create(req.body);
 
-    res.status(201).json({ message: "project created successfully" });
+    res.status(201).json(project);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "internal server error" });
+  }
+};
+
+export const editProject = async (req, res) => {
+  try {
+    if (!req.body)
+      return res.status(400).json({ message: "Body cannot be empty" });
+
+    if (!req.project) return res.status(403).json({ message: "unauthorized" });
+
+    const id = req.params.id;
+    const project = Object.assign(req.project, req.body);
+
+    await project.save();
+
+    res.json(project);
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: "internal server error" });
