@@ -1,4 +1,5 @@
 import Project from "../models/Project";
+import Task from "../models/Task";
 
 export const getPublicProjects = async (req, res) => {
   const sortBy = req.query.sortBy || "name";
@@ -51,6 +52,9 @@ export const getPrivateProjects = async (req, res) => {
   const userId = req.user._id;
 
   try {
+
+    //grabs a list based on user search query for title, and a list of 
+    //projects user is involved in
     const projects = await Project.find({
       title: {
         $regex: title,
@@ -105,7 +109,6 @@ export const editProject = async (req, res) => {
 
     if (!req.project) return res.status(403).json({ message: "unauthorized" });
 
-    const id = req.params.id;
     const project = Object.assign(req.project, req.body);
 
     await project.save();
@@ -116,3 +119,20 @@ export const editProject = async (req, res) => {
     res.status(500).json({ error: "internal server error" });
   }
 };
+
+export const deleteProject = async (req, res) => {
+    try {
+        if (!req.project)
+            return res.status(403).json({message: "unauthorized"})
+
+        //deletes associated tasks and project
+        await Task.deleteMany({_id: {$in: req.project.tasks}})
+        await req.project.deleteOne();
+
+        res.json({message: "Project successfully deleted"})
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).json({error: "internal server error"})
+    }
+}
