@@ -3,6 +3,11 @@ import Message from "./Message";
 
 const ProjectSchema = new Schema({
   timestamps: true,
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: "User",
+    required: true
+  },
   users: {
     type: [Schema.Types.ObjectId],
     ref: "Collaborator",

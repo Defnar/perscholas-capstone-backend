@@ -25,6 +25,7 @@ const UserSchema = new Schema(
     },
     githubId: {
       type: String,
+      unique: true,
       required: function () {
         return !this.password;
       },
