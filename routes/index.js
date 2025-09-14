@@ -1,11 +1,12 @@
 import e from "express";
 import refreshToken from "../controllers/refreshToken";
+import userRoutes from "./userRoutes"
 
 const router = e.Router();
 
 //api...
-router.use("/users", );
+router.use("/users", userRoutes);
 router.use("/refreshToken", refreshToken);
-router.use("/project", );
+router.use("/projects", );
 
 export default router;
