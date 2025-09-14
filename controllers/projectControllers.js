@@ -59,15 +59,27 @@ export const getPrivateProjects = async (req, res) => {
       users: {
         $in: [userId],
       },
-    });
+    })
+      .sort({ [sortBy]: sortOrder })
+      .skip((page - 1) * pageSize)
+      .limit(pageSize);
+
+    res.json(projects);
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: "Internal server error" });
   }
 };
 
-export const getProject = (req, res) => {
-    if (!res.project) return res.status(403).json({message: "Unauthorized"})
+export const getProject = async (req, res) => {
+  if (!res.project) return res.status(403).json({ message: "Unauthorized" });
 
-    res.send(res.project);
-}
+  try {
+    await req.project.populate({ path: "users", path: "tasks" });
+
+    res.send(req.project);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
