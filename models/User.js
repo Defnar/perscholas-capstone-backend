@@ -49,12 +49,11 @@ const UserSchema = new Schema(
   }
 );
 
-UserSchema.pre("save", async function (next) {
+UserSchema.pre("save", async function () {
   if (this.password && (this.isNew || this.isModified("password"))) {
     const saltRounds = 10;
     this.password = await bcrypt.hash(this.password, saltRounds);
   }
-  next();
 });
 
 UserSchema.methods.isCorrectPassword = async function (password) {
