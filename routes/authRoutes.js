@@ -15,7 +15,7 @@ router.get(
 router.get(
   "/github/callback",
   passport.authenticate("github", {
-    failureRedirect: null, //to be filled in later when figuring out how to handle this
+    failureRedirect: "/api/users/auth/github/failure",
     session: false,
   }),
   (req, res) => {
@@ -25,5 +25,9 @@ router.get(
     res.json({ token, user });
   }
 );
+
+router.get("/github/failure", (req, res) => {
+  res.status(401).json({ message: "oauth login failed" });
+});
 
 export default router;
