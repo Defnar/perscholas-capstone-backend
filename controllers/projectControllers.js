@@ -98,7 +98,7 @@ export const createProject = async (req, res) => {
     res.status(201).json(project);
   } catch (err) {
     console.log(err);
-    res.status(500).json({ error: "internal server error" });
+    res.status(400).json({ error: err.message });
   }
 };
 

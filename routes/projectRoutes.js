@@ -16,6 +16,6 @@ router.get("/:id", contentMiddleware(Project, "users", "getProject"), getProject
 router.put("/:id", contentMiddleware(Project, "users", "editProject"), editProject)
 router.delete("/:id", contentMiddleware(Project, "users", "deleteProject"), deleteProject)
 
-router.use("/:id/tasks", contentMiddleware(Project, "users", "getProject"), taskRoutes)
+router.use("/:id/tasks", taskRoutes)
 
 export default router;

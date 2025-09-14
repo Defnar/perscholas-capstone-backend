@@ -1,11 +1,13 @@
 import e from "express";
 import { contentMiddleware } from "../middleware/middleware";
-import { getTask } from "../controllers/taskControllers";
+import { addTask, getTask } from "../controllers/taskControllers";
+import Project from "../models/Project";
 const router = e.Router();
 
 //api/projects/:projectId/tasks/:taskId
-router.get(":taskId", getTask);
+router.post("/:taskId", contentMiddleware(Project, "users", "addTask"), addTask)
 
-router.put(":taskId", contentMiddleware())
+router.use(contentMiddleware(Project, "users", "getProject"))
+router.get("/:taskId", getTask);
 
 export default router;
