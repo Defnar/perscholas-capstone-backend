@@ -23,6 +23,7 @@ const refreshToken = (req, res) => {
     const token = signToken(data, tokenTTL);
 
     // Replace old refresh cookie
+    loggedOutRefresh.set(refreshToken, jwt.decode(refreshToken).exp)
     const refreshExp = jwt.decode(newRefreshToken).exp;
     res.cookie("refreshToken", newRefreshToken, {
       maxAge: refreshExp * 1000 - Date.now(),

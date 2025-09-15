@@ -3,6 +3,7 @@ import refreshToken from "../controllers/refreshToken.js";
 import userRoutes from "./userRoutes.js"
 import projectRoutes from "./projectRoutes.js"
 import { authMiddleware } from "../utils/auth.js";
+import "../models/index.js"
 
 const router = e.Router();
 

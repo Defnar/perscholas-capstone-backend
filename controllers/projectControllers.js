@@ -52,8 +52,7 @@ export const getPrivateProjects = async (req, res) => {
   const userId = req.user._id;
 
   try {
-
-    //grabs a list based on user search query for title, and a list of 
+    //grabs a list based on user search query for title, and a list of
     //projects user is involved in
     const projects = await Project.find({
       title: {
@@ -76,10 +75,14 @@ export const getPrivateProjects = async (req, res) => {
 };
 
 export const getProject = async (req, res) => {
-  if (!res.project) return res.status(403).json({ message: "Unauthorized" });
+  if (!req.project) return res.status(403).json({ message: "Unauthorized" });
 
   try {
-    await req.project.populate({ path: "users", path: "tasks", path: "joinRequests" });
+    await req.project.populate({
+      path: "users",
+      path: "tasks",
+      path: "joinRequests",
+    });
 
     res.send(req.project);
   } catch (err) {
@@ -93,7 +96,26 @@ export const createProject = async (req, res) => {
     return res.status(400).json({ message: "Body cannot be empty" });
 
   try {
-    const project = await Project.create(req.body);
+    const userSetup = {
+      owner: req.user._id,
+      user: [
+        {
+          user: req.user._id,
+          role: "owner",
+          permissions: [
+            "getProject",
+            "editProject",
+            "deleteProject",
+            "addTask",
+            "editTask",
+            "deleteTask",
+            "archiveTask",
+          ],
+        },
+      ],
+    };
+
+    const project = await Project.create({...req.body, ...userSetup});
 
     res.status(201).json(project);
   } catch (err) {
@@ -121,18 +143,16 @@ export const editProject = async (req, res) => {
 };
 
 export const deleteProject = async (req, res) => {
-    try {
-        if (!req.project)
-            return res.status(403).json({message: "unauthorized"})
+  try {
+    if (!req.project) return res.status(403).json({ message: "unauthorized" });
 
-        //deletes associated tasks and project
-        await Task.deleteMany({_id: {$in: req.project.tasks}})
-        await req.project.deleteOne();
+    //deletes associated tasks and project
+    await Task.deleteMany({ _id: { $in: req.project.tasks } });
+    await req.project.deleteOne();
 
-        res.json({message: "Project successfully deleted"})
-    }
-    catch (err) {
-        console.log(err);
-        res.status(500).json({error: "internal server error"})
-    }
-}
+    res.json({ message: "Project successfully deleted" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "internal server error" });
+  }
+};

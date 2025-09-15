@@ -32,7 +32,7 @@ const UserSchema = new Schema(
         },
       },
     },
-    projectList: {
+    projects: {
       type: [Schema.Types.ObjectId],
       default: [],
       ref: "Project",

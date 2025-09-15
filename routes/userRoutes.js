@@ -1,14 +1,16 @@
 import e from "express";
 import { deleteUser, login, logout, register, updateUser } from "../controllers/userControllers.js";
 import authRoutes from "./authRoutes.js";
+import { authMiddleware } from "../utils/auth.js";
 const router = e.Router();
 
 //api/users...
 router.post("/login", login);
 router.post("/register", register);
-router.post("/logout", logout);
 router.use("/auth", authRoutes);
 
+router.use(authMiddleware);
+router.post("/logout", logout);
 router.put("/", updateUser);
 router.delete("/", deleteUser);
 

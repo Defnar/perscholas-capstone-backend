@@ -6,9 +6,9 @@ import Task from "../models/Task.js"
 const router = e.Router();
 
 //api/projects/:projectId/tasks/:taskId
-router.post("/:taskId", contentMiddleware(Project, "users", "addTask"), addTask)
+router.post("/:taskId", contentMiddleware(Project, "user", "addTask"), addTask)
 
-router.use(contentMiddleware(Project, "users", "getProject"))
+router.use(contentMiddleware(Project, "user", "getProject"))
 router.get("/:taskId", getTask);
 router.put("/:taskId", contentMiddleware(Task, "project", "editTask"), editTask)
 router.delete("/:taskId", contentMiddleware(Task, "project", "deleteTask"), deleteTask)

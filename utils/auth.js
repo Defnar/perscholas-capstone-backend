@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-const {TokenExpiredError} = jwt;
+const { TokenExpiredError } = jwt;
 import { loggedOutTokens } from "../config/loggedOutTokens.js";
 
 const secret = process.env.JWT_SECRET;
@@ -30,7 +30,7 @@ export const authMiddleware = (req, res, next) => {
 };
 
 export function signToken(user, expirationTimer = process.env.TOKENTTL) {
-  const payload = { username: user.username, email: user.email, id: user._id };
+  const payload = { username: user.username, email: user.email, _id: user._id };
 
   return jwt.sign({ data: payload }, secret, { expiresIn: expirationTimer });
 }

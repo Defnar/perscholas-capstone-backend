@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
-import Message from "./Message.js";
+import Task from "./Task.js";
+import Message from "./Message.js"
 
 const ProjectSchema = new Schema(
   {
@@ -8,11 +9,32 @@ const ProjectSchema = new Schema(
       ref: "User",
       required: true,
     },
-    users: {
-      type: [Schema.Types.ObjectId],
-      ref: "Collaborator",
-      required: true,
-    },
+    user: [
+      {
+        user: {
+          type: Schema.Types.ObjectId,
+          ref: "User",
+        },
+        role: {
+          type: String,
+          enum: ["owner", "collaborator"],
+        },
+        permissions: [
+          {
+            type: String,
+            enum: [
+              "getProject",
+              "editProject",
+              "deleteProject",
+              "addTask",
+              "editTask",
+              "deleteTask",
+              "archiveTask",
+            ],
+          },
+        ],
+      },
+    ],
     title: {
       type: String,
       required: true,

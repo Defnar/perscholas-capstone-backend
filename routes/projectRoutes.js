@@ -12,9 +12,9 @@ router.get("/", getPublicProjects);
 router.get("/private", getPrivateProjects);
 router.post("/", createProject);
 
-router.get("/:id", contentMiddleware(Project, "users", "getProject"), getProject)
-router.put("/:id", contentMiddleware(Project, "users", "editProject"), editProject)
-router.delete("/:id", contentMiddleware(Project, "users", "deleteProject"), deleteProject)
+router.get("/:id", contentMiddleware(Project, "user", "getProject"), getProject)
+router.put("/:id", contentMiddleware(Project, "user", "editProject"), editProject)
+router.delete("/:id", contentMiddleware(Project, "user", "deleteProject"), deleteProject)
 
 router.use("/:id/tasks", taskRoutes)
 

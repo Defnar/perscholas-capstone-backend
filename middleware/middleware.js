@@ -1,5 +1,3 @@
-import Collaborator from "../models/Collaborator.js";
-
 export const contentMiddleware =
   (Model, parentKey, permKey) => async (req, res, next) => {
     try {
@@ -9,10 +7,17 @@ export const contentMiddleware =
 
       //checks if the parent key returns an array to act accordingly.  array checks array for id
       if (model && Array.isArray(model[parentKey])) {
-        if (model[parentKey].some(collab => collab.user.equals(req.user._id))) {
-          const collaborator = await Collaborator.findById(model[parentKey]);
+        const user = model[parentKey].find(
+          (collab) => {
+            return collab[parentKey]._id == req[parentKey]._id
+      });
 
-          if (permKey && collaborator.permissions.includes(permKey) || collaborator.role==="owner")
+        console.log(user);
+        if (user) {
+          if (
+            (permKey && user.permissions.includes(permKey)) ||
+            collaborator.role === "owner"
+          )
             req[Model.modelName.toLowerCase()] = model;
         }
       } else if (model && model[parentKey].equals(req[parentKey]._id))
