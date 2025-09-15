@@ -1,5 +1,5 @@
-import Project from "../models/Project";
-import Task from "../models/Task";
+import Project from "../models/Project.js";
+import Task from "../models/Task.js";
 
 export const getPublicProjects = async (req, res) => {
   const sortBy = req.query.sortBy || "name";
@@ -79,7 +79,7 @@ export const getProject = async (req, res) => {
   if (!res.project) return res.status(403).json({ message: "Unauthorized" });
 
   try {
-    await req.project.populate({ path: "users", path: "tasks" });
+    await req.project.populate({ path: "users", path: "tasks", path: "joinRequests" });
 
     res.send(req.project);
   } catch (err) {

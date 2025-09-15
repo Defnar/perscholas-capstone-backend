@@ -1,8 +1,8 @@
 import e from "express";
-import refreshToken from "../controllers/refreshToken";
-import userRoutes from "./userRoutes"
-import projectRoutes from "./projectRoutes"
-import { authMiddleware } from "../utils/auth";
+import refreshToken from "../controllers/refreshToken.js";
+import userRoutes from "./userRoutes.js"
+import projectRoutes from "./projectRoutes.js"
+import { authMiddleware } from "../utils/auth.js";
 
 const router = e.Router();
 

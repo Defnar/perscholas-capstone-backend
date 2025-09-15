@@ -1,6 +1,7 @@
-import { loggedOutRefresh } from "../config/loggedOutTokens"
-import jwt, { TokenExpiredError } from "jsonwebtoken";
-import { signToken } from "../utils/auth";
+import { loggedOutRefresh } from "../config/loggedOutTokens.js";
+import jwt from "jsonwebtoken";
+const { TokenExpiredError } = jwt;
+import { signToken } from "../utils/auth.js";
 
 const secret = process.env.JWT_SECRET;
 const refreshTTL = process.env.REFRESHTTL;
@@ -30,13 +31,13 @@ const refreshToken = (req, res) => {
       sameSite: "strict",
     });
 
-    res.json({newToken, user: data})
+    res.json({ newToken, user: data });
   } catch (err) {
     if (err instanceof TokenExpiredError) {
-        return res.status(401).json({message: "User must log in again"})
+      return res.status(401).json({ message: "User must log in again" });
     }
     console.log(err);
-    res.status(500).json({message: "Internal server error"})
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 

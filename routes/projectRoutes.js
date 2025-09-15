@@ -1,8 +1,8 @@
 import e from "express";
-import { createProject, deleteProject, editProject, getPrivateProjects, getProject, getPublicProjects } from "../controllers/projectControllers";
-import { contentMiddleware } from "../middleware/middleware";
-import taskRoutes from "./taskRoutes"
-import Project from "../models/Project";
+import { createProject, deleteProject, editProject, getPrivateProjects, getProject, getPublicProjects } from "../controllers/projectControllers.js";
+import { contentMiddleware } from "../middleware/middleware.js";
+import taskRoutes from "./taskRoutes.js"
+import Project from "../models/Project.js";
 const router = e.Router();
 
 

@@ -1,6 +1,6 @@
-import { loggedOutRefresh, loggedOutTokens } from "../config/loggedOutTokens";
-import User from "../models/User";
-import { signToken } from "../utils/auth";
+import { loggedOutRefresh, loggedOutTokens } from "../config/loggedOutTokens.js";
+import User from "../models/User.js";
+import { signToken } from "../utils/auth.js";
 import jwt from "jsonwebtoken";
 
 const secret = process.env.JWT_SECRET;
@@ -80,7 +80,7 @@ export const updateUser = async (req, res) => {
       }
     }
 
-    const { _id, githubId, ...user } = req.body;
+    const { _id, githubId, message, ...user } = req.body;
     const updatedUser = await user.save();
 
     res.json(updatedUser);

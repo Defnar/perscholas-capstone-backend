@@ -3,7 +3,6 @@ import bcrypt from "bcrypt";
 
 const UserSchema = new Schema(
   {
-    timestamps: true,
     username: {
       type: String,
       minLength: 6,
@@ -35,6 +34,14 @@ const UserSchema = new Schema(
       default: [],
       ref: "Project",
     },
+    message: {
+      type: [Schema.Types.ObjectId],
+      default: [],
+      ref: "Message",
+    },
+  },
+  {
+    timestamps: true,
   },
   {
     toJSON: {

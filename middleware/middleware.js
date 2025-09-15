@@ -1,4 +1,4 @@
-import Collaborator from "../models/Collaborator";
+import Collaborator from "../models/Collaborator.js";
 
 export const contentMiddleware =
   (Model, parentKey, permKey) => async (req, res, next) => {

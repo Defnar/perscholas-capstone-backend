@@ -1,7 +1,7 @@
 import e from "express";
-import "../config/passport";
 import passport from "passport";
-import { signToken } from "../utils/auth";
+import "../config/passport.js";
+import { signToken } from "../utils/auth.js";
 
 const router = e.Router();
 
@@ -21,7 +21,7 @@ router.get(
   (req, res) => {
     const user = req.user;
     const token = signToken(user);
-    const refreshToken = signToken(user, process.env.REFRESHTTL)
+    const refreshToken = signToken(user, process.env.REFRESHTTL);
 
     res.cookie("refreshToken", refreshToken, {
       maxAge: refreshExp * 1000 - Date.now(),
