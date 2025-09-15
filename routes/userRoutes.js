@@ -1,5 +1,5 @@
 import e from "express";
-import { login, logout, register } from "../controllers/userControllers";
+import { login, logout, register, updateUser } from "../controllers/userControllers";
 import authRoutes from "./authRoutes";
 const router = e.Router();
 
@@ -7,7 +7,7 @@ const router = e.Router();
 router.post("/login", login);
 router.post("/register", register);
 router.post("/logout", logout);
-
 router.post("/auth", authRoutes);
+router.put("/", updateUser);
 
 export default router;

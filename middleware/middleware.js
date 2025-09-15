@@ -1,4 +1,3 @@
-import Project from "../models/Project";
 import Collaborator from "../models/Collaborator";
 
 export const contentMiddleware =

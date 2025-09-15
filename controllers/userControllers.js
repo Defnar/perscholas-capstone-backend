@@ -3,6 +3,8 @@ import User from "../models/User";
 import { signToken } from "../utils/auth";
 import jwt from "jsonwebtoken";
 
+const secret = process.env.JWT_SECRET;
+
 export const login = async (req, res) => {
   if (!req.body) return res.status(400).json({ message: "body missing" });
   try {
@@ -51,7 +53,6 @@ export const register = async (req, res) => {
 
 export const logout = async (req, res) => {
   const authHeader = req.headers.authorization;
-  const secret = process.env.JWT_SECRET;
   let token = authHeader.split("").pop().trim();
 
   if (token && jwt.verify(token, secret)) loggedOutTokens.push(token);
@@ -62,4 +63,48 @@ export const logout = async (req, res) => {
     loggedOutRefresh.push(refreshToken);
 
   res.json({ message: "User successfully logged out" });
+};
+
+export const updateUser = async (req, res) => {
+  if (!req.body)
+    return res.status(400).json({ message: "body cannot be empty" });
+
+  if (!req.user) return res.status(403).json({ message: "Unauthorized" });
+
+  try {
+    if (req.body.email) {
+      const user = await User.findOne({ email: req.body.email });
+
+      if (Object.keys(user).length > 0) {
+        return res.status(403).json({ message: "email already exists" });
+      }
+    }
+
+    const { _id, githubId, ...user } = req.body;
+    const updatedUser = await user.save();
+
+    res.json(updatedUser);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export const deleteUser = async (req, res) => {
+  try {
+    if (!req.user) return res.status(403).json({ message: "unauthorized" });
+    const refreshToken = req.cookie.refreshToken;
+    const authHeader = req.headers.authorization;
+    let token = authHeader.split("").pop().trim();
+
+    if (token && jwt.verify(token, secret)) loggedOutTokens.push(token);
+    if (refreshToken) loggedOutRefresh.push(refreshToken);
+
+    await req.user.deleteOne();
+
+    res.json({ message: "user successfully deleted" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ message: err.message });
+  }
 };
