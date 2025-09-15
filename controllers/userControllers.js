@@ -18,7 +18,7 @@ export const login = async (req, res) => {
 
     const user = await User.findOne({ email: email });
 
-    if (user.password.length === 0)
+    if (!user?.password || user?.password.length === 0)
       return res
         .status(401)
         .json({ message: "Please sign in through oauth or set a password" });

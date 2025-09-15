@@ -32,11 +32,6 @@ const UserSchema = new Schema(
         },
       },
     },
-    projects: {
-      type: [Schema.Types.ObjectId],
-      default: [],
-      ref: "Project",
-    },
     message: {
       type: [Schema.Types.ObjectId],
       default: [],

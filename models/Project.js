@@ -1,7 +1,4 @@
 import { Schema, model } from "mongoose";
-import Task from "./Task.js";
-import Message from "./Message.js"
-
 const ProjectSchema = new Schema(
   {
     owner: {
@@ -63,6 +60,7 @@ const ProjectSchema = new Schema(
     joinRequests: {
       type: [Schema.Types.ObjectId],
       ref: "Message",
+      default: []
     },
   },
   {

@@ -1,6 +1,6 @@
+import mongoose from "mongoose";
 import Project from "../models/Project.js";
 import Task from "../models/Task.js";
-import mongoose from "mongoose";
 
 export const getPublicProjects = async (req, res) => {
   const sortBy = req.query.sortBy || "name";
@@ -118,7 +118,9 @@ export const createProject = async (req, res) => {
       ],
     };
 
-    const project = await Project.create({ ...req.body, ...userSetup });
+    const newProject = Object.assign(req.body, userSetup);
+
+    const project = await Project.create(newProject);
 
     res.status(201).json(project);
   } catch (err) {
@@ -134,7 +136,15 @@ export const editProject = async (req, res) => {
 
     if (!req.project) return res.status(403).json({ message: "unauthorized" });
 
-    const project = Object.assign(req.project, req.body);
+    // req.body.user?.map((user) =>
+    //   typeof user.user === mongoose.Types.ObjectId
+    //     ? user
+    //     : (user.user = new mongoose.Types.ObjectId(user.user))
+    // );
+
+    const project = Object.assign(req.project, req.body)
+
+    console.log(project);
 
     await project.save();
 
