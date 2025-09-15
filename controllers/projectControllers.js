@@ -129,6 +129,29 @@ export const createProject = async (req, res) => {
   }
 };
 
+export const editCollaborator = async (req, res) => {
+  try {
+    if (!req.body)
+      return res.status(400).json({ message: "Body cannot be empty" });
+
+    if (!req.project) return res.status(403).json({ message: "unauthorized" });
+
+    const user = req.project.user.find((editor) =>
+      editor.user.equals(req.user._id)
+    );
+
+    if (user.role !== "owner")
+      return res.status(403).json({ message: "unauthorized" });
+
+    const project = Object.assign(req.project, req.body);
+
+    await project.save();
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "internal server error" });
+  }
+};
+
 export const editProject = async (req, res) => {
   try {
     if (!req.body)
@@ -136,15 +159,8 @@ export const editProject = async (req, res) => {
 
     if (!req.project) return res.status(403).json({ message: "unauthorized" });
 
-    // req.body.user?.map((user) =>
-    //   typeof user.user === mongoose.Types.ObjectId
-    //     ? user
-    //     : (user.user = new mongoose.Types.ObjectId(user.user))
-    // );
-
-    const project = Object.assign(req.project, req.body)
-
-    console.log(project);
+    const { user, ...safeUpdate } = req.body;
+    const project = Object.assign(req.project, safeUpdate);
 
     await project.save();
 
