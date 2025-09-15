@@ -1,10 +1,11 @@
 import Project from "../models/Project.js";
 import Task from "../models/Task.js";
+import mongoose from "mongoose";
 
 export const getPublicProjects = async (req, res) => {
   const sortBy = req.query.sortBy || "name";
   const sortOrder = req.query.sortOrder || 1;
-  const title = req.query.sortAuthor || "";
+  const title = req.query.title || "";
   const author = req.query.author || "";
   const pageSize = Number(req.query.pageSize) || 10;
   const page = Number(req.query.page) || 1;
@@ -20,7 +21,7 @@ export const getPublicProjects = async (req, res) => {
         },
       })
       .lookup({
-        from: "User",
+        from: "users",
         localField: "owner",
         foreignField: "_id",
         as: "owner",
@@ -36,6 +37,8 @@ export const getPublicProjects = async (req, res) => {
       .skip((page - 1) * pageSize)
       .limit(pageSize);
 
+    console.log(projects);
+
     res.json(projects);
   } catch (err) {
     console.log(err);
@@ -46,7 +49,7 @@ export const getPublicProjects = async (req, res) => {
 export const getPrivateProjects = async (req, res) => {
   const sortBy = req.query.sortBy || "name";
   const sortOrder = req.query.sortOrder || 1;
-  const title = req.query.sortAuthor || "";
+  const title = req.query.title || "";
   const pageSize = Number(req.query.pageSize) || 10;
   const page = Number(req.query.page) || 1;
   const userId = req.user._id;
@@ -59,7 +62,7 @@ export const getPrivateProjects = async (req, res) => {
         $regex: title,
         $options: "i",
       },
-      users: {
+      "user.user": {
         $in: [userId],
       },
     })
@@ -115,7 +118,7 @@ export const createProject = async (req, res) => {
       ],
     };
 
-    const project = await Project.create({...req.body, ...userSetup});
+    const project = await Project.create({ ...req.body, ...userSetup });
 
     res.status(201).json(project);
   } catch (err) {

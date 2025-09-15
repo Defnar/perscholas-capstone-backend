@@ -9,7 +9,7 @@ const ProjectSchema = new Schema(
       ref: "User",
       required: true,
     },
-    user: [
+   user: [
       {
         user: {
           type: Schema.Types.ObjectId,
