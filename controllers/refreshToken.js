@@ -20,7 +20,7 @@ const refreshToken = (req, res) => {
 
     //create new tokens
     const newRefreshToken = signToken(data, refreshTTL);
-    const newToken = signToken(data, tokenTTL);
+    const token = signToken(data, tokenTTL);
 
     // Replace old refresh cookie
     const refreshExp = jwt.decode(newRefreshToken).exp;
@@ -31,7 +31,7 @@ const refreshToken = (req, res) => {
       sameSite: "strict",
     });
 
-    res.json({ newToken, user: data });
+    res.json({ token, user: data });
   } catch (err) {
     if (err instanceof TokenExpiredError) {
       return res.status(401).json({ message: "User must log in again" });

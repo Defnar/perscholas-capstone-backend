@@ -24,7 +24,6 @@ const UserSchema = new Schema(
     },
     githubId: {
       type: String,
-      unique: true,
       required: function () {
         return !this.password;
       },
@@ -42,8 +41,7 @@ const UserSchema = new Schema(
   },
   {
     timestamps: true,
-  },
-  {
+
     toJSON: {
       transform: function (doc, ret) {
         delete ret.password;

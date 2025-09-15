@@ -1,4 +1,7 @@
-import { loggedOutRefresh, loggedOutTokens } from "../config/loggedOutTokens.js";
+import {
+  loggedOutRefresh,
+  loggedOutTokens,
+} from "../config/loggedOutTokens.js";
 import User from "../models/User.js";
 import { signToken } from "../utils/auth.js";
 import jwt from "jsonwebtoken";
@@ -20,11 +23,12 @@ export const login = async (req, res) => {
         .status(401)
         .json({ message: "Please sign in through oauth or set a password" });
 
-    if (!user || !user.isCorrectPassword(password))
+    if (!user || !(await user.isCorrectPassword(password)))
       return res.status(401).json({ message: "Incorrect email or password" });
 
     const refreshToken = signToken(user, process.env.REFRESHTTL);
     const token = signToken(user);
+    const refreshExp = jwt.decode(refreshToken).exp;
 
     res.cookie("refreshToken", refreshToken, {
       maxAge: refreshExp * 1000 - Date.now(),
@@ -53,14 +57,18 @@ export const register = async (req, res) => {
 
 export const logout = async (req, res) => {
   const authHeader = req.headers.authorization;
-  let token = authHeader.split("").pop().trim();
+  let token = authHeader.split(" ").pop().trim();
 
-  if (token && jwt.verify(token, secret)) loggedOutTokens.push(token);
+  const tokenExp = jwt.decode(token).exp;
+
+  if (token && jwt.verify(token, secret)) loggedOutTokens.set(token, tokenExp);
 
   const refreshToken = res.cookie.refreshToken;
 
-  if (refreshToken && jwt.verify(token, secret))
-    loggedOutRefresh.push(refreshToken);
+  if (refreshToken && jwt.verify(token, secret)) {
+    const refreshExp = jwt.decode(refreshToken).exp;
+    loggedOutRefresh.set(refreshToken, refreshExp);
+  }
 
   res.json({ message: "User successfully logged out" });
 };

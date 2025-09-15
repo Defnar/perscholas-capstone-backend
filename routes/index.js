@@ -8,7 +8,7 @@ const router = e.Router();
 
 //api...
 router.use("/users", userRoutes);
-router.use("/refreshToken", refreshToken);
+router.get("/refreshToken", refreshToken);
 
 router.use(authMiddleware);
 
