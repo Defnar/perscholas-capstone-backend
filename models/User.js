@@ -18,14 +18,18 @@ const UserSchema = new Schema(
     password: {
       type: String,
       minLength: 8,
-      required: function () {
-        return !this.gitHubId;
+      validate: {
+        validator: function (pass) {
+          return pass || this.githubId;
+        },
       },
     },
     githubId: {
       type: String,
-      required: function () {
-        return !this.password;
+      validate: {
+        validator: function (gId) {
+          return gId || this.password;
+        },
       },
     },
     projectList: {

@@ -1,5 +1,6 @@
 import e from "express";
 import passport from "passport";
+import jwt from "jsonwebtoken";
 import "../config/passport.js";
 import { signToken } from "../utils/auth.js";
 
@@ -22,6 +23,7 @@ router.get(
     const user = req.user;
     const token = signToken(user);
     const refreshToken = signToken(user, process.env.REFRESHTTL);
+    const refreshExp = jwt.decode(refreshToken).exp;
 
     res.cookie("refreshToken", refreshToken, {
       maxAge: refreshExp * 1000 - Date.now(),

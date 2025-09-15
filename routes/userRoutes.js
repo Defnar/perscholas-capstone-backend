@@ -7,7 +7,8 @@ const router = e.Router();
 router.post("/login", login);
 router.post("/register", register);
 router.post("/logout", logout);
-router.post("/auth", authRoutes);
+router.use("/auth", authRoutes);
+
 router.put("/", updateUser);
 router.delete("/", deleteUser);
 
