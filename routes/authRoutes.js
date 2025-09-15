@@ -21,6 +21,14 @@ router.get(
   (req, res) => {
     const user = req.user;
     const token = signToken(user);
+    const refreshToken = signToken(user, process.env.REFRESHTTL)
+
+    res.cookie("refreshToken", refreshToken, {
+      maxAge: refreshExp * 1000 - Date.now(),
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
 
     res.json({ token, user });
   }

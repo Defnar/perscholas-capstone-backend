@@ -16,7 +16,15 @@ export const login = async (req, res) => {
     if (!user || !user.isCorrectPassword(password))
       return res.status(401).json({ message: "Incorrect email or password" });
 
+    const refreshToken = signToken(user, process.env.REFRESHTTL);
     const token = signToken(user);
+
+    res.cookie("refreshToken", refreshToken, {
+      maxAge: refreshExp * 1000 - Date.now(),
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+    });
 
     res.json({ token, user });
   } catch (err) {
@@ -48,5 +56,5 @@ export const logout = async (req, res) => {
   if (refreshToken && jwt.verify(token, secret))
     loggedOutRefresh.push(refreshToken);
 
-  res.json({message: "User successfully logged out"})
+  res.json({ message: "User successfully logged out" });
 };
