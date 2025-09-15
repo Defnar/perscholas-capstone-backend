@@ -1,3 +1,4 @@
+import Project from "../models/Project.js";
 import Task from "../models/Task.js";
 
 export const getTask = (req, res) => {
@@ -11,7 +12,17 @@ export const addTask = async (req, res) => {
   if (!req.body) return res.status(400).json({ message: "body missing" });
 
   try {
-    const task = await Task.create(req.body);
+    const taskOwners = {
+      user: req.user._id,
+      project: req.project._id,
+    };
+    const task = await Task.create({ ...req.body, ...taskOwners });
+
+    await Project.findByIdAndUpdate(req.project._id, {
+      $push: {
+        tasks: task._id
+      }
+    });
 
     res.status(201).json(task);
   } catch (err) {
@@ -55,6 +66,12 @@ export const deleteTask = async (req, res) => {
 
   try {
     await req.task.deleteOne();
+
+    await Project.findByIdAndUpdate(req.project._id, {
+      $pull: {
+        tasks: req.task._id
+      }
+    })
 
     res.json({ message: "Task successfully deleted" });
   } catch (err) {

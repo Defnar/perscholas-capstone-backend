@@ -20,26 +20,26 @@ router.get("/private", getPrivateProjects);
 router.post("/", createProject);
 
 router.put(
-  "/:id/contributors",
+  "/:projectId/contributors",
   contentMiddleware(Project, "user", "getProject"),
   editCollaborator
 );
 router.get(
-  "/:id",
+  "/:projectId",
   contentMiddleware(Project, "user", "getProject"),
   getProject
 );
 router.put(
-  "/:id",
+  "/:projectId",
   contentMiddleware(Project, "user", "editProject"),
   editProject
 );
 router.delete(
-  "/:id",
+  "/:projectId",
   contentMiddleware(Project, "user", "deleteProject"),
   deleteProject
 );
 
-router.use("/:id/tasks", taskRoutes);
+router.use("/:projectId/tasks", taskRoutes);
 
 export default router;

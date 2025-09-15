@@ -1,22 +1,27 @@
 export const contentMiddleware =
   (Model, parentKey, permKey) => async (req, res, next) => {
     try {
-      const id = Object.keys(req.params).pop();
+      console.log(req.params)
+      const paramName = Model.modelName.toLowerCase() + "Id";
+      const id = req.params[paramName];
 
-      const model = await Model.findById(req.params[id]);
+      console.log(paramName);
+
+      const model = await Model.findById(id);
+
+      console.log(model);
+      console.log(model[parentKey]);
 
       //checks if the parent key returns an array to act accordingly.  array checks array for id
       if (model && Array.isArray(model[parentKey])) {
-        const user = model[parentKey].find(
-          (collab) => {
-            return collab[parentKey]._id == req[parentKey]._id
-      });
+        const user = model[parentKey].find((collab) => {
+          return collab[parentKey]._id == req[parentKey]._id;
+        });
 
-        console.log(user);
         if (user) {
           if (
             (permKey && user.permissions.includes(permKey)) ||
-            collaborator.role === "owner"
+            user.role === "owner"
           )
             req[Model.modelName.toLowerCase()] = model;
         }

@@ -81,11 +81,11 @@ export const getProject = async (req, res) => {
   if (!req.project) return res.status(403).json({ message: "Unauthorized" });
 
   try {
-    await req.project.populate({
-      path: "users",
-      path: "tasks",
-      path: "joinRequests",
-    });
+    await req.project.populate([
+  { path: "user.user" },
+  { path: "tasks" },
+  { path: "joinRequests" }
+]);
 
     res.send(req.project);
   } catch (err) {
