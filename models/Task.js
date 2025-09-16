@@ -28,6 +28,10 @@ const TaskSchema = new Schema(
     deadline: {
       type: Date,
     },
+    completedBy: {
+      type: Schema.Types.ObjectId,
+      ref: "User"
+    }
   },
   {
     timestamps: true,

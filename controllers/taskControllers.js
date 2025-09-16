@@ -4,7 +4,7 @@ import Task from "../models/Task.js";
 export const getTask = async (req, res) => {
   if (!req.task) return res.status(403).json({ message: "unauthorized" });
 
-  const task = await req.task.populate("user");
+  const task = await req.task.populate("user").populate("completedBy");
 
   res.json(task);
 };
