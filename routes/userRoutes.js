@@ -8,9 +8,7 @@ import {
   updateUser,
 } from "../controllers/userControllers.js";
 import authRoutes from "./authRoutes.js";
-import messageRoutes from "./messageRoutes.js"
 import { authMiddleware } from "../utils/auth.js";
-import Message from "../models/Message.js";
 const router = e.Router();
 
 //api/users...

@@ -39,7 +39,8 @@ export const requestJoin = async (req, res) => {
   try {
     if (!req.user) return res.status(403).json({ message: "unauthorized" });
 
-    const { message, projectId } = req.body;
+    const { message } = req.body;
+    const projectId = req.params;
     const project = await Project.findById(projectId);
 
     if (!project) return res.status(404).json({ message: "project not found" });
@@ -73,11 +74,9 @@ export const requestJoin = async (req, res) => {
 
 export const rejectJoin = async (req, res) => {
   try {
-    if (!req.user) return res.status(403).json({ message: "unauthorized" });
+    if (!req.user || !req.message) return res.status(403).json({ message: "unauthorized" });
 
-    const { messageId } = req.params;
-
-    const message = await Message.findById(messageId);
+    const message = await Message.findById(req.message._id);
     if (!message) return res.status(404).json({ message: "request not found" });
 
     if (message.type && message.type !== "joinRequest") {

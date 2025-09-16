@@ -1,3 +1,4 @@
+import Message from "../models/Message.js";
 import Project from "../models/Project.js";
 import Task from "../models/Task.js";
 
@@ -241,6 +242,43 @@ export const leaveProject = async (req, res) => {
     await req.project.save();
 
     return res.json({ message: "left project successfully" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "internal server error" });
+  }
+};
+
+export const sendInvite = async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    if (!req.project) {
+      return res.status(403).json({ message: "unauthorized" });
+    }
+
+    const invitedUser = await User.findById(userId);
+    if (!invitedUser) {
+      return res.status(404).json({ message: "user not found" });
+    }
+
+    if (req.project.invited.includes(userId)) {
+      return res.status(400).json({ message: "user already invited" });
+    }
+
+    const message = await Message.create({
+      user: userId,
+      project: req.project._id,
+      message: `${req.user.username} invited you to join the project: ${req.project.title}`,
+    });
+
+    req.project.invited.push(userId);
+    req.project.joinRequests.push(message._id);
+    await req.project.save();
+
+    invitedUser.message.push(message._id);
+    await invitedUser.save();
+
+    return res.status(201).json({ message: "invite sent successfully", invite: message });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "internal server error" });

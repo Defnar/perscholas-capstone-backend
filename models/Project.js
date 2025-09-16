@@ -29,6 +29,7 @@ const ProjectSchema = new Schema(
               "editTask",
               "deleteTask",
               "archiveTask",
+              "inviteUsers"
             ],
           },
         ],

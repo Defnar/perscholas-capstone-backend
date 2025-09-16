@@ -8,6 +8,7 @@ import {
   getProject,
   getPublicProjects,
   leaveProject,
+  sendInvite,
 } from "../controllers/projectControllers.js";
 import { contentMiddleware } from "../middleware/middleware.js";
 import taskRoutes from "./taskRoutes.js";
@@ -42,6 +43,7 @@ router.delete(
   deleteProject
 );
 
+router.post("/:projectId/invite", contentMiddleware(Project, "user", "inviteUsers"), sendInvite)
 router.post("/:projectId/leave", contentMiddleware(Project, "user", "getProject"), leaveProject)
 
 router.use("/:projectId/tasks", taskRoutes);
