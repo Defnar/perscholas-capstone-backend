@@ -7,6 +7,7 @@ import {
   getPrivateProjects,
   getProject,
   getPublicProjects,
+  leaveProject,
 } from "../controllers/projectControllers.js";
 import { contentMiddleware } from "../middleware/middleware.js";
 import taskRoutes from "./taskRoutes.js";
@@ -18,6 +19,7 @@ const router = e.Router();
 router.get("/", getPublicProjects);
 router.get("/private", getPrivateProjects);
 router.post("/", createProject);
+router.post("/:projectId/request", )
 
 router.put(
   "/:projectId/collaborators",
@@ -39,6 +41,8 @@ router.delete(
   contentMiddleware(Project, "user", "deleteProject"),
   deleteProject
 );
+
+router.post("/:projectId/leave", contentMiddleware(Project, "user", "getProject"), leaveProject)
 
 router.use("/:projectId/tasks", taskRoutes);
 

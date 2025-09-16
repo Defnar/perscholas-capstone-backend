@@ -2,6 +2,7 @@ import e from "express";
 import refreshToken from "../controllers/refreshToken.js";
 import userRoutes from "./userRoutes.js"
 import projectRoutes from "./projectRoutes.js"
+import messageRoutes from "./messageRoutes.js"
 import { authMiddleware } from "../utils/auth.js";
 import "../models/index.js"
 
@@ -14,5 +15,6 @@ router.get("/refreshToken", refreshToken);
 router.use(authMiddleware);
 
 router.use("/projects", projectRoutes);
+router.use("/message", messageRoutes)
 
 export default router;

@@ -74,7 +74,7 @@ export const getPrivateProjects = async (req, res) => {
   const title = req.query.title || "";
   const pageSize = Number(req.query.pageSize) || 10;
   const page = Number(req.query.page) || 1;
-  const userId = req.user._id;
+  const req.user._id = req.user._id;
 
   try {
     //grabs a list based on user search query for title, and a list of
@@ -85,7 +85,7 @@ export const getPrivateProjects = async (req, res) => {
         $options: "i",
       },
       "user.user": {
-        $in: [userId],
+        $in: [req.user._id],
       },
     })
       .sort({ [sortBy]: sortOrder })
@@ -98,7 +98,7 @@ export const getPrivateProjects = async (req, res) => {
         $options: "i",
       },
       "user.user": {
-        $in: [userId],
+        $in: [req.user._id],
       },
     });
 
@@ -217,3 +217,33 @@ export const deleteProject = async (req, res) => {
     res.status(500).json({ error: "internal server error" });
   }
 };
+
+export const leaveProject = async (req, res) => {
+  try {
+    if (!req.project) return res.status(403).json({ message: "unauthorized" });
+
+     const user = req.project.user.find((currentUser) =>
+      currentUser.user.equals(req.user._id)
+    );
+    if (!user) {
+      return res.status(400).json({ message: "user not in project" });
+    }
+    if (user.role === "owner") {
+      return res
+        .status(403)
+        .json({ message: "project owner cannot leave project" });
+    }
+
+    req.project.user = req.project.user.filter(
+      (currentUser) => !currentUser.user.equals(req.user._id)
+    );
+
+    await req.project.save();
+
+    return res.json({ message: "left project successfully" });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "internal server error" });
+  }
+};
+
