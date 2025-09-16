@@ -60,9 +60,18 @@ GITHUB_CLIENT_SECRET=
 - returns an array of users using input as a regex
 - returns _id, username, email, and message list
 
-## Accept an invite request
-- POST `/api/users/message/:messageId`
+## Message routes
+### Accept an invite request
+- POST `/api/message/:messageId`
 - allows a user to accept an invite to a project
+
+### request to join a project
+- POST `/api/message/message:id/projects/:projectId`
+- allows you to request to join a project, also allowing the user to provide a message
+
+### Reject joinin a project
+- POST `/api/message/:messageId/reject`
+- rejects and removes an invite
 
 ## Project Routes
 ### public projects
@@ -130,6 +139,17 @@ GITHUB_CLIENT_SECRET=
 |addTask| allows a user to add tasks to a project|
 |deleteTask| allows a user to delete a task|
 |archiveTask| allows a user to archive a task|
+|inviteUsers| allows a user to invite other collaborators|
+
+
+### invite a user
+- POST `/api/projects/projectId/invite`
+ - Allows anyone with permission to invite another user using their id.  Would recommend pairing this with the find user function
+ - send a request using the key-value of `userId: id`
+
+### Leave a project
+- POST `/api/projects/projectId/leave`
+- allows a user other than the owner to leave a project
 
 
 ### get a project
