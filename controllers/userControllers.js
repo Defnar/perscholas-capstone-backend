@@ -80,18 +80,27 @@ export const updateUser = async (req, res) => {
   if (!req.user) return res.status(403).json({ message: "Unauthorized" });
 
   try {
-    if (req.body.email || req.body.username) {
-      const user = await User.find().or(
-        {
-          email: req.body.email,
-        },
-        {
-          username: req.body.username,
-        }
-      );
+    if (
+      req.body.email !== req.user.email ||
+      req.body.username !== req.user.username
+    ) {
+      let emailCheck = {};
+      let usernameCheck = {};
 
-      if (Object.keys(user).length > 0) {
+      if (req.body.email !== req.user.email) {
+        emailCheck = await User.find({ email: req.body.email });
+      }
+
+      if (req.body.username !== req.user.username) {
+        usernameCheck = await User.find({ username: req.body.username });
+      }
+
+      if (Object.keys(emailCheck).length > 0) {
         return res.status(403).json({ message: "email already exists" });
+      }
+
+      if (Object.keys(usernameCheck).length > 0) {
+        return res.status(403).json({ message: "username already exists" });
       }
     }
 
