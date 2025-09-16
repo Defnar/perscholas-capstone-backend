@@ -74,7 +74,7 @@ export const getPrivateProjects = async (req, res) => {
   const title = req.query.title || "";
   const pageSize = Number(req.query.pageSize) || 10;
   const page = Number(req.query.page) || 1;
-  const req.user._id = req.user._id;
+  const userId = req.user._id;
 
   try {
     //grabs a list based on user search query for title, and a list of
@@ -85,7 +85,7 @@ export const getPrivateProjects = async (req, res) => {
         $options: "i",
       },
       "user.user": {
-        $in: [req.user._id],
+        $in: [userId],
       },
     })
       .sort({ [sortBy]: sortOrder })
@@ -98,7 +98,7 @@ export const getPrivateProjects = async (req, res) => {
         $options: "i",
       },
       "user.user": {
-        $in: [req.user._id],
+        $in: [userId],
       },
     });
 
@@ -222,8 +222,8 @@ export const leaveProject = async (req, res) => {
   try {
     if (!req.project) return res.status(403).json({ message: "unauthorized" });
 
-     const user = req.project.user.find((currentUser) =>
-      currentUser.user.equals(req.user._id)
+    const user = req.project.user.find((currentUser) =>
+      currentUser.user.equals(req.user.id)
     );
     if (!user) {
       return res.status(400).json({ message: "user not in project" });
@@ -235,7 +235,7 @@ export const leaveProject = async (req, res) => {
     }
 
     req.project.user = req.project.user.filter(
-      (currentUser) => !currentUser.user.equals(req.user._id)
+      (currentUser) => !currentUser.user.equals(req.user.id)
     );
 
     await req.project.save();
@@ -246,4 +246,3 @@ export const leaveProject = async (req, res) => {
     return res.status(500).json({ error: "internal server error" });
   }
 };
-
