@@ -64,6 +64,11 @@ const ProjectSchema = new Schema(
       ref: "Message",
       default: [],
     },
+    invited: {
+      type: [Schema.Types.ObjectId],
+      ref: "User",
+      default: []
+    }
   },
   {
     timestamps: true,
