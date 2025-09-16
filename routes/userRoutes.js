@@ -10,6 +10,8 @@ import {
 import authRoutes from "./authRoutes.js";
 import { authMiddleware } from "../utils/auth.js";
 import { acceptJoin } from "../controllers/messageControllers.js";
+import { contentMiddleware } from "../middleware/middleware.js";
+import Message from "../models/Message.js";
 const router = e.Router();
 
 //api/users...
@@ -23,6 +25,6 @@ router.put("/", updateUser);
 router.delete("/", deleteUser);
 router.get("/", findUsers);
 
-router.post("/message", acceptJoin)
+router.post("/message/messageId", contentMiddleware(Message, "user"), acceptJoin)
 
 export default router;

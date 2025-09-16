@@ -7,13 +7,22 @@ export const acceptJoin = async (req, res) => {
 
     const project = await Project.findById(req.message.project);
 
-    if (!project) res.status(400).json({ message: "no project found" });
+    if (!project) return res.status(400).json({ message: "no project found" });
 
     if (!project.invited.includes(req.user._id))
-      res.status(403).json({ message: "unauthorized" });
+      return res.status(403).json({ message: "unauthorized" });
 
-    if (!project.user.includes(req.user._id)) {
-      project.user.push(req.user._id);
+    if (!project.user.some((user) => user.user.equals(req.user._id))) {
+      project.user.push({
+        user: req.user._id,
+        role: "collaborator",
+        permissions: ["getProject"],
+      });
+
+      project.invited = project.invited.filter(
+        (id) => !id.equals(req.user._id)
+      );
+
       await project.save();
       return res.json({ message: "user successfully added" });
     } else {
