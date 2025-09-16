@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import Project from "../models/Project.js";
 import Task from "../models/Task.js";
 
@@ -12,6 +11,7 @@ export const getPublicProjects = async (req, res) => {
 
   try {
     //this was a pain to figure out.  hoping it works 👀
+    //update, it worked!
     const projects = await Project.aggregate()
       .match({
         private: false,
