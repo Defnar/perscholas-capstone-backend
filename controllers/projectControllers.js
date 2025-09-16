@@ -6,7 +6,7 @@ export const getPublicProjects = async (req, res) => {
   const sortBy = req.query.sortBy || "name";
   const sortOrder = req.query.sortOrder || 1;
   const title = req.query.title || "";
-  const author = req.query.author || "";
+  const owner = req.query.owner || "";
   const pageSize = Number(req.query.pageSize) || 10;
   const page = Number(req.query.page) || 1;
 
@@ -29,7 +29,7 @@ export const getPublicProjects = async (req, res) => {
       .unwind("owner")
       .match({
         "owner.username": {
-          $regex: author,
+          $regex: owner,
           $options: "i",
         },
       })
