@@ -1,5 +1,12 @@
 import e from "express";
-import { deleteUser, login, logout, register, updateUser } from "../controllers/userControllers.js";
+import {
+  deleteUser,
+  findUsers,
+  login,
+  logout,
+  register,
+  updateUser,
+} from "../controllers/userControllers.js";
 import authRoutes from "./authRoutes.js";
 import { authMiddleware } from "../utils/auth.js";
 const router = e.Router();
@@ -13,5 +20,6 @@ router.use(authMiddleware);
 router.post("/logout", logout);
 router.put("/", updateUser);
 router.delete("/", deleteUser);
+router.get("/", findUsers);
 
 export default router;

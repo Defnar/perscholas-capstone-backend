@@ -6,15 +6,17 @@ const ProjectSchema = new Schema(
       ref: "User",
       required: true,
     },
-   user: [
+    user: [
       {
         user: {
           type: Schema.Types.ObjectId,
           ref: "User",
+          required: true,
         },
         role: {
           type: String,
           enum: ["owner", "collaborator"],
+          required: true,
         },
         permissions: [
           {
@@ -60,7 +62,7 @@ const ProjectSchema = new Schema(
     joinRequests: {
       type: [Schema.Types.ObjectId],
       ref: "Message",
-      default: []
+      default: [],
     },
   },
   {

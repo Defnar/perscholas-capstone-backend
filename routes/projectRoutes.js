@@ -20,7 +20,7 @@ router.get("/private", getPrivateProjects);
 router.post("/", createProject);
 
 router.put(
-  "/:projectId/contributors",
+  "/:projectId/collaborators",
   contentMiddleware(Project, "user", "getProject"),
   editCollaborator
 );
