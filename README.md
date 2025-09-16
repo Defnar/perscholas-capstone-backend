@@ -9,7 +9,7 @@
 - Dependencies: bcrypt, cookie-parser, cors, dotenv, express, jsonwebtoken, mongoose, passport, passport-github2
 
 ##Env files
-- set up your env files with these variables.  the github url should follow the following syntax: <your address, IE: http://localhost><port></api/users/auth/github/callback on the backend, or call this api on the frontend>
+- set up your env files with these variables.  the github url should follow the following syntax: your address(IE: http://localhost), port, `/api/users/auth/github/callback` on the backend, or call this api on the frontend
 
 ~~~
 MONGO_URI=
