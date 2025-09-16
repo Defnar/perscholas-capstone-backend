@@ -37,9 +37,31 @@ export const getPublicProjects = async (req, res) => {
       .skip((page - 1) * pageSize)
       .limit(pageSize);
 
-    console.log(projects);
+    //count documents in the array that matches this search
+    const count = await Project.aggregate()
+      .match({
+        private: false,
+        title: {
+          $regex: title,
+          $options: "i",
+        },
+      })
+      .lookup({
+        from: "users",
+        localField: "owner",
+        foreignField: "_id",
+        as: "owner",
+      })
+      .unwind("owner")
+      .match({
+        "owner.username": {
+          $regex: owner,
+          $options: "i",
+        },
+      })
+      .count("count");
 
-    res.json(projects);
+    res.json({ projects, total: count });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: "Internal server error" });
@@ -70,7 +92,17 @@ export const getPrivateProjects = async (req, res) => {
       .skip((page - 1) * pageSize)
       .limit(pageSize);
 
-    res.json(projects);
+    const count = await Project.countDocuments({
+      title: {
+        $regex: title,
+        $options: "i",
+      },
+      "user.user": {
+        $in: [userId],
+      },
+    });
+
+    res.json({projects, total: count});
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: "Internal server error" });
