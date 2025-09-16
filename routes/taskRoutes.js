@@ -15,7 +15,7 @@ const router = e.Router({mergeParams: true});
 router.post("/", contentMiddleware(Project, "user", "addTask"), addTask);
 
 router.use(contentMiddleware(Project, "user", "getProject"));
-router.get("/:taskId", getTask);
+router.get("/:taskId", contentMiddleware(Task, "project", "getProject"), getTask);
 router.put(
   "/:taskId",
   contentMiddleware(Task, "project", "editTask"),

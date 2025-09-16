@@ -1,10 +1,12 @@
 import Project from "../models/Project.js";
 import Task from "../models/Task.js";
 
-export const getTask = (req, res) => {
+export const getTask = async (req, res) => {
   if (!req.task) return res.status(403).json({ message: "unauthorized" });
 
-  res.json(req.task);
+  const task = await req.task.populate("user");
+
+  res.json(task);
 };
 
 export const addTask = async (req, res) => {

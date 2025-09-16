@@ -82,10 +82,10 @@ export const getProject = async (req, res) => {
 
   try {
     await req.project.populate([
-  { path: "user.user" },
-  { path: "tasks" },
-  { path: "joinRequests" }
-]);
+      { path: "user.user" },
+      { path: "tasks", populate: { path: "user" } },
+      { path: "joinRequests" },
+    ]);
 
     res.send(req.project);
   } catch (err) {

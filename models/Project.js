@@ -55,7 +55,7 @@ const ProjectSchema = new Schema(
     },
     status: {
       type: String,
-      enum: ["To Do", "In Progress", "Done", "Overdue", "Archived"],
+      enum: ["To Do", "In Progress", "Done", "Overdue", "Archive"],
       required: true,
       default: "To Do",
     },
