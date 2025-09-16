@@ -60,6 +60,10 @@ GITHUB_CLIENT_SECRET=
 - returns an array of users using input as a regex
 - returns _id, username, email, and message list
 
+## Accept an invite request
+- POST `/api/users/message/:messageId`
+- allows a user to accept an invite to a project
+
 ## Project Routes
 ### public projects
 - GET `/api/projects`
