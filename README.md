@@ -87,7 +87,7 @@ GITHUB_CLIENT_SECRET=
 | key | description | required? | default |
 |:-:|:-:|:-:|:-:|
 |owner | owner of project| yes | creator of the project|
-|user | array of users with access, see edit collaborators for more information | no | creator of the project|
+|user | array of users with access, see project collaborators for more information | no | creator of the project|
 |title| name of project | yes | |
 |tasks| array of task database Ids | no | [] |
 |deadline| allows user to set deadline | no | |
