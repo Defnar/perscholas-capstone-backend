@@ -80,8 +80,15 @@ export const updateUser = async (req, res) => {
   if (!req.user) return res.status(403).json({ message: "Unauthorized" });
 
   try {
-    if (req.body.email) {
-      const user = await User.findOne({ email: req.body.email });
+    if (req.body.email || req.body.username) {
+      const user = await User.find().or(
+        {
+          email: req.body.email,
+        },
+        {
+          username: req.body.username,
+        }
+      );
 
       if (Object.keys(user).length > 0) {
         return res.status(403).json({ message: "email already exists" });

@@ -45,7 +45,6 @@ const UserSchema = new Schema(
       transform: function (doc, ret) {
         delete ret.password;
         delete ret.githubId;
-        delete ret.projectList;
 
         return ret;
       },
