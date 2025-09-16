@@ -4,6 +4,27 @@
 - users may attach tasks to their projects.
 - allows for user signup using username, email, password, or through github oauth.
 
+# installation
+- download the files and run `npm i` in your root file to install all dependencies.
+- Dependencies: bcrypt, cookie-parser, cors, dotenv, express, jsonwebtoken, mongoose, passport, passport-github2
+
+##Env files
+- set up your env files with these variables.  the github url should follow the following syntax: <your address, IE: http://localhost><port></api/users/auth/github/callback on the backend, or call this api on the frontend>
+
+~~~
+MONGO_URI=
+JWT_SECRET=
+REFRESHTTL=
+TOKENTTL=
+NODE_ENV="development" OR "production"
+PORT=8000
+
+#github
+GITHUB_CLIENT_ID=
+GITHUB_CALLBACK_URL=http://localhost:8000/api/users/auth/github/callback
+GITHUB_CLIENT_SECRET=
+~~~
+
 ## User Routes
 ### Register
 - POST `/api/users/register`
