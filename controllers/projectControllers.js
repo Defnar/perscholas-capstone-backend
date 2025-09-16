@@ -146,6 +146,7 @@ export const createProject = async (req, res) => {
             "editTask",
             "deleteTask",
             "archiveTask",
+            "inviteUsers"
           ],
         },
       ],
