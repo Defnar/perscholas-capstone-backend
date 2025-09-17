@@ -102,6 +102,7 @@ GITHUB_CLIENT_SECRET=
 |owner | owner of project| yes | creator of the project|
 |user | array of users with access, see project collaborators for more information | no | creator of the project|
 |title| name of project | yes | |
+|description| description of project| no | |
 |tasks| array of task database Ids | no | [] |
 |deadline| allows user to set deadline | no | |
 |private| sets project to private or public view | yes | true |
