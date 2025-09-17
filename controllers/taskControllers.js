@@ -57,9 +57,16 @@ export const editTask = async (req, res) => {
   try {
     const task = Object.assign(req.task, req.body);
 
+    if (req.task.deadline) 
+      req.task.deadline = new Date(req.task.deadline);
+
     await task.save();
 
-    await updateTaskHistory(task._id, req.user._id, `Made the following changes: ${req.body}`)
+    await updateTaskHistory(
+      task._id,
+      req.user._id,
+      `Made the following changes: ${req.body}`
+    );
 
     res.json(task);
   } catch (err) {
@@ -100,8 +107,8 @@ export const updateTaskStatus = async (req, res) => {
 
   if (
     //ensures user can make edits to archive if they are attempting it
-    ((status === "Archive" && req.task.status !== "Archive") ||
-      (status !== "Archive" && req.task.status === "Archive"))
+    (status === "Archive" && req.task.status !== "Archive") ||
+    (status !== "Archive" && req.task.status === "Archive")
   ) {
     const user = req.project.user.find((collab) =>
       collab.user.equals(req.user._id)
@@ -114,7 +121,11 @@ export const updateTaskStatus = async (req, res) => {
     req.task.status = status;
     await req.task.status.save();
 
-    await updateTaskHistory(req.task._id, req.user._id, `Changed status to ${status}`)
+    await updateTaskHistory(
+      req.task._id,
+      req.user._id,
+      `Changed status to ${status}`
+    );
 
     res.json({ message: "task updated successfully" });
   } catch (err) {
