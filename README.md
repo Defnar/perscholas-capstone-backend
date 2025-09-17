@@ -141,6 +141,7 @@ GITHUB_CLIENT_SECRET=
 |deleteTask| allows a user to delete a task|
 |archiveTask| allows a user to archive a task|
 |inviteUsers| allows a user to invite other collaborators|
+|updateTaskStatus| Allows a user to update the task status |
 
 
 ### invite a user
@@ -171,7 +172,7 @@ GITHUB_CLIENT_SECRET=
 ## Task Routes
 ### Add Task
 - POST `/api/projects/projectId/tasks/`
-- allows a user to add task.  See chart below for options
+- allows a user to add task.  See chart below for task object layout
 
 |key|description|required|default|
 |:-:|:-:|:-:|:-:|
@@ -179,6 +180,7 @@ GITHUB_CLIENT_SECRET=
 |description| description of the project| no ||
 |status| set the status of the task, options same as project status| yes | To Do|
 |deadline| when task is due to complete| no||
+|updatedHistory| contains an array of objects referencing user object, action made, and date| no||
 
 ### Get Task
 - GET `/api/projects/projectId/tasks/taskId`
@@ -187,6 +189,10 @@ GITHUB_CLIENT_SECRET=
 ### Edit task
 - PUT `/api/projects/projectId/tasks/taskId`
 - Allows a user to edit a task.  Requires archiveTask permission to archive a task
+
+### Change task status
+- PUT `/api/projects/projectId/tasks/taskId/status`
+- Allows a user to update a task status.  Also requires archiveTask permission to archive a task
 
 ### Delete task
 - DELETE `/api/projects/projectId/tasks/taskId`
