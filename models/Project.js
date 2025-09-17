@@ -26,6 +26,7 @@ const ProjectSchema = new Schema(
               "editProject",
               "deleteProject",
               "addTask",
+              "updateTaskStatus",
               "editTask",
               "deleteTask",
               "archiveTask",

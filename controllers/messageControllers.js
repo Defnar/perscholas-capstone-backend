@@ -4,14 +4,14 @@ import Project from "../models/Project.js";
 export const acceptJoin = async (req, res) => {
   try {
     if (!req.user || !req.message)
-      return res.status(403).json({ message: "unauthorized" });
+      return res.status(403).json({ error: "unauthorized to access this" });
 
     const project = await Project.findById(req.message.project);
 
-    if (!project) return res.status(400).json({ message: "no project found" });
+    if (!project) return res.status(400).json({ error: "no project found" });
 
     if (!project.invited.includes(req.user._id))
-      return res.status(403).json({ message: "unauthorized" });
+      return res.status(403).json({ error: "unauthorized to access this" });
 
     if (!project.user.some((user) => user.user.equals(req.user._id))) {
       project.user.push({
@@ -27,7 +27,7 @@ export const acceptJoin = async (req, res) => {
       await project.save();
       return res.json({ message: "user successfully added" });
     } else {
-      return res.json({ message: "user already in project" });
+      return res.json({ error: "user already in project" });
     }
   } catch (err) {
     console.log(err);
@@ -37,13 +37,13 @@ export const acceptJoin = async (req, res) => {
 
 export const requestJoin = async (req, res) => {
   try {
-    if (!req.user) return res.status(403).json({ message: "unauthorized" });
+    if (!req.user) return res.status(403).json({ error: "unauthorized to access this" });
 
     const { message } = req.body;
     const projectId = req.params;
     const project = await Project.findById(projectId);
 
-    if (!project) return res.status(404).json({ message: "project not found" });
+    if (!project) return res.status(404).json({ error: "project not found" });
 
     const messageExists = await Message.findOne({
       user: req.user._id,
@@ -51,7 +51,7 @@ export const requestJoin = async (req, res) => {
     });
 
     if (messageExists)
-      return res.status(400).json({ message: "join request already sent" });
+      return res.status(400).json({ error: "join request already sent" });
 
     const newMessage = new Message({
       user: req.user._id,
@@ -74,17 +74,17 @@ export const requestJoin = async (req, res) => {
 
 export const rejectJoin = async (req, res) => {
   try {
-    if (!req.user || !req.message) return res.status(403).json({ message: "unauthorized" });
+    if (!req.user || !req.message) return res.status(403).json({ error: "unauthorized to access this" });
 
     const message = await Message.findById(req.message._id);
-    if (!message) return res.status(404).json({ message: "request not found" });
+    if (!message) return res.status(404).json({ error: "request not found" });
 
     if (message.type && message.type !== "joinRequest") {
-      return res.status(400).json({ message: "not a join request" });
+      return res.status(400).json({ error: "not a join request" });
     }
 
     const project = await Project.findById(message.project);
-    if (!project) return res.status(404).json({ message: "project not found" });
+    if (!project) return res.status(404).json({ error: "project not found" });
 
     project.joinRequests = project.joinRequests.filter(
       (reqId) => !reqId.equals(message._id)

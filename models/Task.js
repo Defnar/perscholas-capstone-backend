@@ -31,7 +31,19 @@ const TaskSchema = new Schema(
     completedBy: {
       type: Schema.Types.ObjectId,
       ref: "User"
-    }
+    },
+    updatedHistory: [{
+      user: {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+      },
+      action: {
+        type: String
+      },
+      time: {
+        type: Date
+      }
+    }]
   },
   {
     timestamps: true,

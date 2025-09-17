@@ -75,9 +75,9 @@ export const logout = async (req, res) => {
 
 export const updateUser = async (req, res) => {
   if (!req.body)
-    return res.status(400).json({ message: "body cannot be empty" });
+    return res.status(400).json({ error: "body cannot be empty" });
 
-  if (!req.user) return res.status(403).json({ message: "Unauthorized" });
+  if (!req.user) return res.status(403).json({ error: "unauthorized to access this" });
 
   try {
     const { email, username } = req.body;
@@ -85,14 +85,14 @@ export const updateUser = async (req, res) => {
     if (email && email !== req.user.email) {
       const emailCheck = await User.findOne({ email: email });
       if (emailCheck)
-        return res.status(403).json({ message: "email already exists" });
+        return res.status(403).json({ error: "email already exists" });
     }
 
     if (username && username !== req.user.username) {
       const usernameCheck = await User.findOne({ username: username });
 
       if (usernameCheck)
-        return res.status(403).json({ message: "username already exists" });
+        return res.status(403).json({ error: "username already exists" });
     }
 
     const { _id, githubId, message, ...user } = req.body;
@@ -109,7 +109,7 @@ export const updateUser = async (req, res) => {
 
 export const deleteUser = async (req, res) => {
   try {
-    if (!req.user) return res.status(403).json({ message: "unauthorized" });
+    if (!req.user) return res.status(403).json({ error: "unauthorized" });
     const refreshToken = req.cookie.refreshToken;
     const authHeader = req.headers.authorization;
     let token = authHeader.split("").pop().trim();

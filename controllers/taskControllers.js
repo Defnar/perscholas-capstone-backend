@@ -1,8 +1,10 @@
 import Project from "../models/Project.js";
 import Task from "../models/Task.js";
+import { updateTaskHistory } from "../utils/updateTaskHistory.js";
 
 export const getTask = async (req, res) => {
-  if (!req.task) return res.status(403).json({ message: "unauthorized" });
+  if (!req.task)
+    return res.status(403).json({ error: "unauthorized to access this" });
 
   const task = await req.task.populate("user").populate("completedBy");
 
@@ -10,8 +12,9 @@ export const getTask = async (req, res) => {
 };
 
 export const addTask = async (req, res) => {
-  if (!req.project) return res.status(403).json({ message: "unauthorized" });
-  if (!req.body) return res.status(400).json({ message: "body missing" });
+  if (!req.project)
+    return res.status(403).json({ error: "unauthorized to access this" });
+  if (!req.body) return res.status(400).json({ error: "body missing" });
 
   try {
     const taskOwners = {
@@ -22,8 +25,8 @@ export const addTask = async (req, res) => {
 
     await Project.findByIdAndUpdate(req.project._id, {
       $push: {
-        tasks: task._id
-      }
+        tasks: task._id,
+      },
     });
 
     res.status(201).json(task);
@@ -34,8 +37,9 @@ export const addTask = async (req, res) => {
 };
 
 export const editTask = async (req, res) => {
-  if (!req.task) return res.status(403).json({ message: "unauthorized" });
-  if (!req.body) return res.status(400).json({ message: "body missing" });
+  if (!req.task)
+    return res.status(403).json({ error: "unauthorized to access this" });
+  if (!req.body) return res.status(400).json({ error: "body missing" });
 
   if (
     //ensures user can make edits to archive if they are attempting it
@@ -47,13 +51,15 @@ export const editTask = async (req, res) => {
       collab.user.equals(req.user._id)
     );
     if (!user.permissions.includes("archiveTask"))
-      return res.status(403).json({ message: "Unauthorized" });
+      return res.status(403).json({ error: "Unauthorized to make this edit" });
   }
 
   try {
     const task = Object.assign(req.task, req.body);
 
     await task.save();
+
+    await updateTaskHistory(task._id, req.user._id, `Made the following changes: ${req.body}`)
 
     res.json(task);
   } catch (err) {
@@ -63,21 +69,44 @@ export const editTask = async (req, res) => {
 };
 
 export const deleteTask = async (req, res) => {
-  if (!req.task) return res.status(403).json({ message: "unauthorized" });
-  if (!req.body) return res.status(400).json({ message: "body missing" });
+  if (!req.task)
+    return res.status(403).json({ error: "unauthorized to access this" });
+  if (!req.body) return res.status(400).json({ error: "body missing" });
 
   try {
     await req.task.deleteOne();
 
     await Project.findByIdAndUpdate(req.project._id, {
       $pull: {
-        tasks: req.task._id
-      }
-    })
+        tasks: req.task._id,
+      },
+    });
 
     res.json({ message: "Task successfully deleted" });
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: "internal server error" });
+  }
+};
+
+export const updateTaskStatus = async (req, res) => {
+  if (!req.task)
+    return res.status(403).json({ error: "unauthorized to access this" });
+  if (!req.body) return res.status(400).json({ error: "body missing" });
+
+  const { status } = req.body;
+  if (!status)
+    return res.status(403).json({ error: "Unauthorized to make edits" });
+
+  try {
+    req.task.status = status;
+    await req.task.status.save();
+
+    await updateTaskHistory(req.task._id, req.user._id, `Changed status to ${status}`)
+
+    res.json({ message: "task updated successfully" });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: "internal server error" });
   }
 };

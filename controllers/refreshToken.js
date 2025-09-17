@@ -12,7 +12,7 @@ const refreshToken = (req, res) => {
   if (!refreshToken || loggedOutRefresh.has(refreshToken)) {
     return res
       .status(401)
-      .json({ message: "Invalid or missing refresh token" });
+      .json({ error: "Invalid or missing refresh token" });
   }
 
   try {
@@ -35,10 +35,10 @@ const refreshToken = (req, res) => {
     res.json({ token, user: data });
   } catch (err) {
     if (err instanceof TokenExpiredError) {
-      return res.status(401).json({ message: "User must log in again" });
+      return res.status(401).json({ error: "User must log in again" });
     }
     console.log(err);
-    res.status(500).json({ message: "Internal server error" });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
