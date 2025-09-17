@@ -44,10 +44,10 @@ export const editTask = async (req, res) => {
   if (
     //ensures user can make edits to archive if they are attempting it
     req.body.status &&
-    ((req.body.status === "archive" && req.task.status !== "archive") ||
-      (req.body.status !== "archive" && req.task.status === "archive"))
+    ((req.body.status === "Archive" && req.task.status !== "Archive") ||
+      (req.body.status !== "Archive" && req.task.status === "Archive"))
   ) {
-    const user = req.project.users.find((collab) =>
+    const user = req.project.user.find((collab) =>
       collab.user.equals(req.user._id)
     );
     if (!user.permissions.includes("archiveTask"))
@@ -97,6 +97,18 @@ export const updateTaskStatus = async (req, res) => {
   const { status } = req.body;
   if (!status)
     return res.status(403).json({ error: "Unauthorized to make edits" });
+
+  if (
+    //ensures user can make edits to archive if they are attempting it
+    ((status === "Archive" && req.task.status !== "Archive") ||
+      (status !== "Archive" && req.task.status === "Archive"))
+  ) {
+    const user = req.project.user.find((collab) =>
+      collab.user.equals(req.user._id)
+    );
+    if (!user.permissions.includes("archiveTask"))
+      return res.status(403).json({ error: "Unauthorized to make this edit" });
+  }
 
   try {
     req.task.status = status;
