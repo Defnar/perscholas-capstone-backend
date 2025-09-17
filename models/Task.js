@@ -43,7 +43,8 @@ const TaskSchema = new Schema(
       time: {
         type: Date
       }
-    }]
+    }],
+    default: []
   },
   {
     timestamps: true,
