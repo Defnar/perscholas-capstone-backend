@@ -9,10 +9,10 @@ const tokenTTL = process.env.TOKENTTL;
 
 const refreshToken = (req, res) => {
   const refreshToken = req.cookies.refreshToken;
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  console.log(loggedOutRefresh.has(refreshToken))
   if (!refreshToken || loggedOutRefresh.has(refreshToken)) {
-    return res
-      .status(401)
-      .json({ error: "Invalid or missing refresh token" });
+    return res.status(401).json({ error: "Invalid or missing refresh token" });
   }
 
   try {
@@ -23,7 +23,7 @@ const refreshToken = (req, res) => {
     const token = signToken(data, tokenTTL);
 
     // Replace old refresh cookie
-    loggedOutRefresh.set(refreshToken, jwt.decode(refreshToken).exp)
+    loggedOutRefresh.set(refreshToken, jwt.decode(refreshToken).exp);
     const refreshExp = jwt.decode(newRefreshToken).exp;
     res.cookie("refreshToken", newRefreshToken, {
       maxAge: refreshExp * 1000 - Date.now(),
