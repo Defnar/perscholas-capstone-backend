@@ -13,6 +13,8 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
+    console.log(email, password);
+
     if (!email || !password)
       return res.status(400).json({ error: "email or password missing" });
 
@@ -29,6 +31,7 @@ export const login = async (req, res) => {
     const refreshToken = signToken(user, process.env.REFRESHTTL);
     const token = signToken(user);
     const refreshExp = jwt.decode(refreshToken).exp;
+
 
     res.cookie("refreshToken", refreshToken, {
       maxAge: refreshExp * 1000 - Date.now(),

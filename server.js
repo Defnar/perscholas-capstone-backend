@@ -11,6 +11,11 @@ const port = process.env.PORT || 8000;
 app.use(e.json());
 app.use(cors());
 app.use(cookieParser());
+
+app.use("/", (req, res, next) => {
+    console.log(req.path);
+    next();
+})
 app.use("/api", indexRoutes);
 
 db.once("open", () => {

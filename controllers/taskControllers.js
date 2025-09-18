@@ -78,7 +78,6 @@ export const editTask = async (req, res) => {
 export const deleteTask = async (req, res) => {
   if (!req.task)
     return res.status(403).json({ error: "unauthorized to access this" });
-  if (!req.body) return res.status(400).json({ error: "body missing" });
 
   try {
     await req.task.deleteOne();
@@ -119,7 +118,7 @@ export const updateTaskStatus = async (req, res) => {
 
   try {
     req.task.status = status;
-    await req.task.status.save();
+    await req.task.save();
 
     await updateTaskHistory(
       req.task._id,
