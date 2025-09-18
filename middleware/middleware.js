@@ -1,7 +1,6 @@
 export const contentMiddleware =
   (Model, parentKey, permKey) => async (req, res, next) => {
     try {
-      console.log(req.params);
       const paramName = Model.modelName.toLowerCase() + "Id";
       const id = req.params[paramName];
 

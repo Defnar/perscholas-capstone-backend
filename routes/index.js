@@ -12,9 +12,9 @@ const router = e.Router();
 router.use("/users", userRoutes);
 router.get("/refreshToken", refreshToken);
 
-router.use(authMiddleware);
-
 router.use("/projects", projectRoutes);
+
+router.use(authMiddleware);
 router.use("/message", messageRoutes)
 
 export default router;

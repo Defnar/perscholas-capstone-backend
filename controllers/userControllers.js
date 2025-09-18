@@ -9,22 +9,22 @@ import jwt from "jsonwebtoken";
 const secret = process.env.JWT_SECRET;
 
 export const login = async (req, res) => {
-  if (!req.body) return res.status(400).json({ message: "body missing" });
+  if (!req.body) return res.status(400).json({ error: "body missing" });
   try {
     const { email, password } = req.body;
 
     if (!email || !password)
-      return res.status(400).json({ message: "email or password missing" });
+      return res.status(400).json({ error: "email or password missing" });
 
     const user = await User.findOne({ email: email });
 
     if (!user?.password || user?.password.length === 0)
       return res
         .status(401)
-        .json({ message: "Please sign in through oauth or set a password" });
+        .json({ error: "Please sign in through oauth or set a password" });
 
     if (!user || !(await user.isCorrectPassword(password)))
-      return res.status(401).json({ message: "Incorrect email or password" });
+      return res.status(401).json({ error: "Incorrect email or password" });
 
     const refreshToken = signToken(user, process.env.REFRESHTTL);
     const token = signToken(user);
@@ -44,7 +44,7 @@ export const login = async (req, res) => {
 };
 
 export const register = async (req, res) => {
-  if (!req.body) return res.status(400).json({ message: "body missing" });
+  if (!req.body) return res.status(400).json({ error: "body missing" });
 
   try {
     const user = await User.create(req.body);
@@ -147,3 +147,17 @@ export const findUsers = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+export const findUserById = async (req, res) => {
+  try {
+    const {userId} = req.params;
+
+    const user = await User.findById(userId);
+
+    res.json(user);
+
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({error: "internal server error"})
+  }
+}

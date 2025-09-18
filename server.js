@@ -1,7 +1,7 @@
 import "dotenv/config";
 import e from "express";
 import db from "./config/connection.js";
-import indexRoutes from "./routes/index.js"
+import indexRoutes from "./routes/index.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
@@ -14,5 +14,5 @@ app.use(cookieParser());
 app.use("/api", indexRoutes);
 
 db.once("open", () => {
-    app.listen(port, () => console.log(`server up at http://localhost:${port}`))
-})
+  app.listen(port, () => console.log(`server up at http://localhost:${port}`));
+});

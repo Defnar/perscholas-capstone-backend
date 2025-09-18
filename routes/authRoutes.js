@@ -32,12 +32,12 @@ router.get(
       sameSite: "strict",
     });
 
-    res.json({ token, user });
+    res.redirect(`http://localhost:5173/auth/callback?oauth=success&token=${token}&userid=${user._id}`)
   }
 );
 
 router.get("/github/failure", (req, res) => {
-  res.status(401).json({ message: "oauth login failed" });
+  res.redirect("http://localhost:5173/auth/callback?oauth=failure")
 });
 
 export default router;

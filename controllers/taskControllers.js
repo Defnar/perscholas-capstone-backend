@@ -21,7 +21,7 @@ export const addTask = async (req, res) => {
       user: req.user._id,
       project: req.project._id,
     };
-    const task = await Task.create({ ...req.body, ...taskOwners });
+    const task = await Task.create({ ...req.body, ...taskOwners, updatedHistory: {user: req.user._id, action: "created", time: Date.now()} });
 
     await Project.findByIdAndUpdate(req.project._id, {
       $push: {

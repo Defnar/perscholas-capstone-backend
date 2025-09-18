@@ -1,6 +1,7 @@
 import e from "express";
 import {
   deleteUser,
+  findUserById,
   findUsers,
   login,
   logout,
@@ -15,6 +16,7 @@ const router = e.Router();
 router.post("/login", login);
 router.post("/register", register);
 router.use("/auth", authRoutes);
+router.get("/find/:userId", findUserById);
 
 router.use(authMiddleware);
 router.post("/logout", logout);

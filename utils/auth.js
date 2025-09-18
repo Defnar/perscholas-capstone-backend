@@ -6,6 +6,7 @@ const secret = process.env.JWT_SECRET;
 
 export const authMiddleware = (req, res, next) => {
   const authHeader = req.headers.authorization;
+  if (!authHeader) return res.status(400).json({error: "please log in"})
   let token = authHeader.split(" ").pop().trim();
 
   if (!token)

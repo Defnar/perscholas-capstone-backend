@@ -10,17 +10,22 @@ import {
   leaveProject,
   sendInvite,
 } from "../controllers/projectControllers.js";
+import { authMiddleware } from "../utils/auth.js";
 import { contentMiddleware } from "../middleware/middleware.js";
 import taskRoutes from "./taskRoutes.js";
 import Project from "../models/Project.js";
+import { requestJoin } from "../controllers/messageControllers.js";
 const router = e.Router();
 
 //api/projects
 
 router.get("/", getPublicProjects);
+
+router.use(authMiddleware);
 router.get("/private", getPrivateProjects);
+
 router.post("/", createProject);
-router.post("/:projectId/request", )
+router.post("/:projectId/request", requestJoin);
 
 router.put(
   "/:projectId/collaborators",
@@ -43,8 +48,16 @@ router.delete(
   deleteProject
 );
 
-router.post("/:projectId/invite", contentMiddleware(Project, "user", "inviteUsers"), sendInvite)
-router.post("/:projectId/leave", contentMiddleware(Project, "user", "getProject"), leaveProject)
+router.post(
+  "/:projectId/invite",
+  contentMiddleware(Project, "user", "inviteUsers"),
+  sendInvite
+);
+router.post(
+  "/:projectId/leave",
+  contentMiddleware(Project, "user", "getProject"),
+  leaveProject
+);
 
 router.use("/:projectId/tasks", taskRoutes);
 
