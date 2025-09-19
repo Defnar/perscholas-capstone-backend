@@ -32,7 +32,6 @@ export const login = async (req, res) => {
     const token = signToken(user);
     const refreshExp = jwt.decode(refreshToken).exp;
 
-
     res.cookie("refreshToken", refreshToken, {
       maxAge: refreshExp * 1000 - Date.now(),
       httpOnly: true,
@@ -77,10 +76,10 @@ export const logout = async (req, res) => {
 };
 
 export const updateUser = async (req, res) => {
-  if (!req.body)
-    return res.status(400).json({ error: "body cannot be empty" });
+  if (!req.body) return res.status(400).json({ error: "body cannot be empty" });
 
-  if (!req.user) return res.status(403).json({ error: "unauthorized to access this" });
+  if (!req.user)
+    return res.status(403).json({ error: "unauthorized to access this" });
 
   try {
     const { email, username } = req.body;
@@ -131,15 +130,11 @@ export const deleteUser = async (req, res) => {
 
 export const findUsers = async (req, res) => {
   try {
-    const { username, email } = req.query;
+    const { username } = req.query;
 
     const users = await User.find({
       username: {
         $regex: username,
-        $options: "i",
-      },
-      email: {
-        $regex: email,
         $options: "i",
       },
     });
@@ -153,14 +148,13 @@ export const findUsers = async (req, res) => {
 
 export const findUserById = async (req, res) => {
   try {
-    const {userId} = req.params;
+    const { userId } = req.params;
 
     const user = await User.findById(userId);
 
     res.json(user);
-
   } catch (err) {
     console.log(err);
-    res.status(500).json({error: "internal server error"})
+    res.status(500).json({ error: "internal server error" });
   }
-}
+};

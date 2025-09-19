@@ -1,6 +1,7 @@
 import Message from "../models/Message.js";
 import Project from "../models/Project.js";
 import Task from "../models/Task.js";
+import User from "../models/User.js";
 
 export const getPublicProjects = async (req, res) => {
   const sortBy = req.query.sortBy || "name";
