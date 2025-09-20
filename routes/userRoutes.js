@@ -3,6 +3,7 @@ import {
   deleteUser,
   findUserById,
   findUsers,
+  getUserMessages,
   login,
   logout,
   register,
@@ -19,6 +20,7 @@ router.use("/auth", authRoutes);
 router.get("/find/:userId", findUserById);
 
 router.use(authMiddleware);
+router.get("/messages", getUserMessages);
 router.post("/logout", logout);
 router.put("/", updateUser);
 router.delete("/", deleteUser);

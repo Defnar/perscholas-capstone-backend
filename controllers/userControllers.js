@@ -16,7 +16,9 @@ export const login = async (req, res) => {
     if (!email || !password)
       return res.status(400).json({ error: "email or password missing" });
 
-    const user = await User.findOne({ email: email });
+    const user = await User.findOne({ email: email }).populate([
+      { path: "message" },
+    ]);
 
     if (!user?.password || user?.password.length === 0)
       return res
@@ -86,7 +88,6 @@ export const logout = async (req, res) => {
   res.clearCookie("refreshToken");
   res.json({ message: "User successfully logged out" });
 };
-
 
 export const updateUser = async (req, res) => {
   if (!req.body) return res.status(400).json({ error: "body cannot be empty" });
@@ -166,6 +167,21 @@ export const findUserById = async (req, res) => {
     const user = await User.findById(userId);
 
     res.json(user);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "internal server error" });
+  }
+};
+
+export const getUserMessages = async (req, res) => {
+  if (!req.user) res.json({ error: "Not authorized to get messages" });
+
+  try {
+    const user = await User.findById(req.user._id).populate([
+      { path: "message" },
+    ]);
+
+    res.json(user.message);
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: "internal server error" });

@@ -1,5 +1,6 @@
 import Message from "../models/Message.js";
 import Project from "../models/Project.js";
+import User from "../models/User.js";
 
 export const acceptJoin = async (req, res) => {
   try {
@@ -7,6 +8,7 @@ export const acceptJoin = async (req, res) => {
       return res.status(403).json({ error: "unauthorized to access this" });
 
     const project = await Project.findById(req.message.project);
+    const user = await User.findById(req.user._id);
 
     if (!project) return res.status(400).json({ error: "no project found" });
 
@@ -24,6 +26,10 @@ export const acceptJoin = async (req, res) => {
         (id) => !id.equals(req.user._id)
       );
 
+      user.message = user.message.filter((m) => !m._id.equals(req.message._id));
+
+      await user.save();
+
       await project.save();
       return res.json({ message: "user successfully added" });
     } else {
@@ -37,10 +43,11 @@ export const acceptJoin = async (req, res) => {
 
 export const requestJoin = async (req, res) => {
   try {
-    if (!req.user) return res.status(403).json({ error: "unauthorized to access this" });
+    if (!req.user)
+      return res.status(403).json({ error: "unauthorized to access this" });
 
     const { message } = req.body;
-    const {projectId} = req.params;
+    const { projectId } = req.params;
     const project = await Project.findById(projectId);
 
     if (!project) return res.status(404).json({ error: "project not found" });
@@ -74,7 +81,8 @@ export const requestJoin = async (req, res) => {
 
 export const rejectJoin = async (req, res) => {
   try {
-    if (!req.user || !req.message) return res.status(403).json({ error: "unauthorized to access this" });
+    if (!req.user || !req.message)
+      return res.status(403).json({ error: "unauthorized to access this" });
 
     const message = await Message.findById(req.message._id);
     if (!message) return res.status(404).json({ error: "request not found" });
@@ -85,10 +93,15 @@ export const rejectJoin = async (req, res) => {
 
     const project = await Project.findById(message.project);
     if (!project) return res.status(404).json({ error: "project not found" });
+    const user = await User.findById(user._id);
 
     project.joinRequests = project.joinRequests.filter(
       (reqId) => !reqId.equals(message._id)
     );
+
+    user.message = user.message.filter((m) => !m._id.equals(req.message._id));
+
+    await user.save();
     await project.save();
 
     await message.deleteOne();
