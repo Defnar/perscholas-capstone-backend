@@ -35,7 +35,7 @@ export const getPublicProjects = async (req, res) => {
           $options: "i",
         },
       })
-      .sort({ [sortBy]: sortOrder })
+      .sort({ [sortBy]: Number(sortOrder) })
       .skip((page - 1) * pageSize)
       .limit(pageSize);
 
@@ -63,7 +63,7 @@ export const getPublicProjects = async (req, res) => {
       })
       .count("count");
 
-    res.json({ projects, total: count });
+    res.json({ projects, total: count[0] });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: "Internal server error" });
@@ -90,7 +90,7 @@ export const getPrivateProjects = async (req, res) => {
         $in: [userId],
       },
     })
-      .sort({ [sortBy]: sortOrder })
+      .sort({ [sortBy]: Number(sortOrder) })
       .skip((page - 1) * pageSize)
       .limit(pageSize);
 

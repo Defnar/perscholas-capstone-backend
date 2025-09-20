@@ -19,6 +19,7 @@ app.use(cookieParser());
 
 app.use("/", (req, res, next) => {
     console.log(req.path);
+    console.log(req.params.url);
     next();
 })
 app.use("/api", indexRoutes);
