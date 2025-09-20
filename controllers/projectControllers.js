@@ -63,7 +63,9 @@ export const getPublicProjects = async (req, res) => {
       })
       .count("count");
 
-    res.json({ projects, total: count[0] });
+      const total = count[0].count
+
+    res.json({ projects, total: total });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: "Internal server error" });
