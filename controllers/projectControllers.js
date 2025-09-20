@@ -112,12 +112,16 @@ export const getPrivateProjects = async (req, res) => {
 };
 
 export const getProject = async (req, res) => {
-  if (!req.project) return res.status(403).json({ error: "unauthorized to access this" });
+  if (!req.project)
+    return res.status(403).json({ error: "unauthorized to access this" });
 
   try {
     await req.project.populate([
       { path: "user.user" },
-      { path: "tasks", populate: { path: "user", path: "completedBy", path: "updatedHistory" } },
+      {
+        path: "tasks",
+        populate: { path: "user", path: "completedBy", path: "updatedHistory" },
+      },
       { path: "joinRequests" },
     ]);
 
@@ -129,8 +133,7 @@ export const getProject = async (req, res) => {
 };
 
 export const createProject = async (req, res) => {
-  if (!req.body)
-    return res.status(400).json({ error: "Body cannot be empty" });
+  if (!req.body) return res.status(400).json({ error: "Body cannot be empty" });
 
   try {
     const userSetup = {
@@ -148,7 +151,7 @@ export const createProject = async (req, res) => {
             "deleteTask",
             "archiveTask",
             "inviteUsers",
-            "updateTaskStatus"
+            "updateTaskStatus",
           ],
         },
       ],
@@ -170,7 +173,8 @@ export const editCollaborator = async (req, res) => {
     if (!req.body)
       return res.status(400).json({ error: "Body cannot be empty" });
 
-    if (!req.project) return res.status(403).json({ error: "unauthorized to access this" });
+    if (!req.project)
+      return res.status(403).json({ error: "unauthorized to access this" });
 
     const user = req.project.user.find((editor) =>
       editor.user.equals(req.user._id)
@@ -179,7 +183,11 @@ export const editCollaborator = async (req, res) => {
     if (user.role !== "owner")
       return res.status(403).json({ error: "unauthorized to access this" });
 
-    const project = Object.assign(req.project, req.body);
+    const { user: projectUser } = req.body;
+
+    const project = Object.assign(req.project, { user: projectUser });
+
+    console.log(project);
 
     await project.save();
   } catch (err) {
@@ -193,7 +201,8 @@ export const editProject = async (req, res) => {
     if (!req.body)
       return res.status(400).json({ error: "Body cannot be empty" });
 
-    if (!req.project) return res.status(403).json({ error: "unauthorized to access this" });
+    if (!req.project)
+      return res.status(403).json({ error: "unauthorized to access this" });
 
     const { user, ...safeUpdate } = req.body;
     const project = Object.assign(req.project, safeUpdate);
@@ -209,7 +218,8 @@ export const editProject = async (req, res) => {
 
 export const deleteProject = async (req, res) => {
   try {
-    if (!req.project) return res.status(403).json({ error: "unauthorized to access this" });
+    if (!req.project)
+      return res.status(403).json({ error: "unauthorized to access this" });
 
     //deletes associated tasks and project
     await Task.deleteMany({ _id: { $in: req.project.tasks } });
@@ -224,7 +234,8 @@ export const deleteProject = async (req, res) => {
 
 export const leaveProject = async (req, res) => {
   try {
-    if (!req.project) return res.status(403).json({ error: "unauthorized to access this" });
+    if (!req.project)
+      return res.status(403).json({ error: "unauthorized to access this" });
 
     const user = req.project.user.find((currentUser) =>
       currentUser.user.equals(req.user.id)
@@ -281,9 +292,73 @@ export const sendInvite = async (req, res) => {
     invitedUser.message.push(message._id);
     await invitedUser.save();
 
-    return res.status(201).json({ message: "invite sent successfully", invite: message });
+    return res
+      .status(201)
+      .json({ message: "invite sent successfully", invite: message });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ error: "internal server error" });
+  }
+};
+
+export const acceptJoinRequest = async (req, res) => {
+  if (!req.user) return res.status(401).json({ error: "User needs to log in" });
+  if (!req.project)
+    return res.status(403).json({ error: "Unauthorized to accept requests" });
+
+  try {
+    const { messageId } = req.body;
+
+    const message = await Message.findById(messageId);
+
+    if (!message)
+      return res.status(404).json({ error: "Message id not found" });
+
+    const userId = message.user;
+
+    if (req.project.user.some((user) => user.user.equals(userId)))
+      return res.status(400).json({ error: "User already a collaborator" });
+
+    req.project.user.push({
+      user: userId,
+      role: "collaborator",
+      permissions: ["getProject", "addTask", "updateTaskStatus", "editTask"],
+    });
+
+    req.project.joinRequests = req.project.joinRequests.filter(
+      (id) => !id.equals(messageId)
+    );
+
+    await req.project.save();
+    await message.deleteOne();
+    const projectOutput = await req.project.populate([{ path: "user.user" }]);
+
+    console.log(projectOutput);
+
+    res.json({ message: "User successfully added", project: projectOutput });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const rejectJoinRequest = async (req, res) => {
+  if (!req.user) return res.status(401).json({ error: "User needs to log in" });
+  if (!req.project)
+    return res.status(403).json({ error: "No authorized to make this change" });
+
+  try {
+    const { messageId } = req.body;
+
+    const response = await Message.findByIdAndDelete(messageId);
+
+    req.project.joinRequests = req.project.joinRequests.filter(
+      (id) => !id.equals(messageId)
+    );
+
+    res.json({ message: "successfully denied request" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ error: "internal server error" });
   }
 };

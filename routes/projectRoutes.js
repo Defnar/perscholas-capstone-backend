@@ -1,5 +1,6 @@
 import e from "express";
 import {
+  acceptJoinRequest,
   createProject,
   deleteProject,
   editCollaborator,
@@ -8,6 +9,7 @@ import {
   getProject,
   getPublicProjects,
   leaveProject,
+  rejectJoinRequest,
   sendInvite,
 } from "../controllers/projectControllers.js";
 import { authMiddleware } from "../utils/auth.js";
@@ -29,7 +31,7 @@ router.post("/:projectId/request", requestJoin);
 
 router.put(
   "/:projectId/collaborators",
-  contentMiddleware(Project, "user", "getProject"),
+  contentMiddleware(Project, "user", "inviteUsers"),
   editCollaborator
 );
 router.get(
@@ -53,6 +55,14 @@ router.post(
   contentMiddleware(Project, "user", "inviteUsers"),
   sendInvite
 );
+
+router.put(
+  "/:projectId/accept",
+  contentMiddleware(Project, "user", "inviteUsers"),
+  acceptJoinRequest
+);
+
+router.put("/:projectId/reject", contentMiddleware(Project, "user", "inviteUsers"), rejectJoinRequest)
 router.post(
   "/:projectId/leave",
   contentMiddleware(Project, "user", "getProject"),

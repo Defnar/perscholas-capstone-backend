@@ -13,8 +13,6 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    console.log(email, password);
-
     if (!email || !password)
       return res.status(400).json({ error: "email or password missing" });
 
@@ -59,21 +57,36 @@ export const register = async (req, res) => {
 
 export const logout = async (req, res) => {
   const authHeader = req.headers.authorization;
-  let token = authHeader.split(" ").pop().trim();
+  if (!authHeader) return res.status(400).json({ error: "No token provided" });
 
-  const tokenExp = jwt.decode(token).exp;
+  const token = authHeader.split(" ").pop().trim();
 
-  if (token && jwt.verify(token, secret)) loggedOutTokens.set(token, tokenExp);
-
-  const refreshToken = res.cookie.refreshToken;
-
-  if (refreshToken && jwt.verify(token, secret)) {
-    const refreshExp = jwt.decode(refreshToken).exp;
-    loggedOutRefresh.set(refreshToken, refreshExp);
+  try {
+    if (token && jwt.verify(token, secret)) {
+      const tokenExp = jwt.decode(token).exp;
+      loggedOutTokens.set(token, tokenExp);
+    }
+  } catch (err) {
+    console.log("Invalid access token on logout:", err.message);
   }
 
+  const refreshToken = req.cookies.refreshToken;
+
+  console.log(refreshToken);
+  console.log(jwt.verify(refreshToken, secret));
+  try {
+    if (refreshToken && jwt.verify(refreshToken, secret)) {
+      const refreshExp = jwt.decode(refreshToken).exp;
+      loggedOutRefresh.set(refreshToken, refreshExp);
+    }
+  } catch (err) {
+    console.log("Invalid refresh token on logout:", err.message);
+  }
+
+  res.clearCookie("refreshToken");
   res.json({ message: "User successfully logged out" });
 };
+
 
 export const updateUser = async (req, res) => {
   if (!req.body) return res.status(400).json({ error: "body cannot be empty" });

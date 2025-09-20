@@ -40,7 +40,7 @@ export const requestJoin = async (req, res) => {
     if (!req.user) return res.status(403).json({ error: "unauthorized to access this" });
 
     const { message } = req.body;
-    const projectId = req.params;
+    const {projectId} = req.params;
     const project = await Project.findById(projectId);
 
     if (!project) return res.status(404).json({ error: "project not found" });
@@ -62,7 +62,7 @@ export const requestJoin = async (req, res) => {
     });
 
     await newMessage.save();
-    project.joinRequests.push(message._id);
+    project.joinRequests.push(newMessage._id);
     await project.save();
 
     return res.status(200).json({ message: "request successfully sent" });
