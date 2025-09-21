@@ -135,7 +135,7 @@ GITHUB_CLIENT_SECRET=
 ### project collaborators
 - PUT `/api/projects/projectId/collaborators`
 - Allows a user to edit collaborators, their permissions, and who is and is not a collaborator.
-- projects should have a user array attached to them.  Frontend should look to return a modified array based on this, using the chart below
+- projects should have a user array attached to them. Frontend should look to return the user id, edited permissions array, and edited role. (right now only roles are owner and collaborator, but this can be expanded later).
 - to get access to _id of a user, use the find user function defined in user routes.
 
 |key|description|required|default|
