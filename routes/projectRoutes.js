@@ -62,7 +62,11 @@ router.put(
   acceptJoinRequest
 );
 
-router.put("/:projectId/reject", contentMiddleware(Project, "user", "inviteUsers"), rejectJoinRequest)
+router.put(
+  "/:projectId/reject",
+  contentMiddleware(Project, "user", "inviteUsers"),
+  rejectJoinRequest
+);
 router.post(
   "/:projectId/leave",
   contentMiddleware(Project, "user", "getProject"),

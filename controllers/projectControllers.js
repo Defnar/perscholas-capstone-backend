@@ -119,7 +119,9 @@ export const getProject = async (req, res) => {
 
   try {
     await req.project.populate([
-      { path: "user.user" },
+      { path: "user.user",
+        select: "-message -email"
+       },
       {
         path: "tasks",
         populate: { path: "user", path: "completedBy", path: "updatedHistory" },
