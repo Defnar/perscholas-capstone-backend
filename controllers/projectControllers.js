@@ -178,25 +178,32 @@ export const editCollaborator = async (req, res) => {
       return res.status(400).json({ error: "Body cannot be empty" });
 
     if (!req.project)
-      return res.status(403).json({ error: "unauthorized to access this" });
+      return res.status(403).json({ error: "Unauthorized to access this project" });
 
-    const user = req.project.user.find((editor) =>
-      editor.user.equals(req.user._id)
-    );
+    // Check if current user is the project owner
+    const currentUser = req.project.user.find(u => u.user.equals(req.user._id));
+    if (!currentUser || currentUser.role !== "owner")
+      return res.status(403).json({ error: "Only the project owner can edit collaborators" });
 
-    if (user.role !== "owner")
-      return res.status(403).json({ error: "unauthorized to access this" });
+    const { userId, permissions, role } = req.body;
 
-    const { user: projectUser } = req.body;
+    // Find the collaborator to update
+    const collaborator = req.project.user.find(u => u.user.equals(userId));
+    if (!collaborator) return res.status(404).json({ error: "Collaborator not found" });
 
-    const project = Object.assign(req.project, { user: projectUser });
+    // Update fields if provided
+    if (permissions) collaborator.permissions = permissions;
+    if (role) collaborator.role = role;
 
-    await project.save();
+    await req.project.save();
+
+    res.json({ user: collaborator });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({ error: "internal server error" });
+    console.error(err);
+    res.status(500).json({ error: "Internal server error" });
   }
 };
+
 
 export const editProject = async (req, res) => {
   try {
