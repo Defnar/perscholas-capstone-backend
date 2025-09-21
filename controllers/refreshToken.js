@@ -25,9 +25,9 @@ const refreshToken = (req, res) => {
     loggedOutRefresh.set(refreshToken, jwt.decode(refreshToken).exp);
     const refreshExp = jwt.decode(newRefreshToken).exp;
     res.cookie("refreshToken", newRefreshToken, {
-      maxAge: refreshExp * 1000 - Date.now(),
+      maxAge: refreshExp * 1000,
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
       sameSite: "none"
     });
 

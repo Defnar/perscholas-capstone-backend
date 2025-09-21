@@ -33,9 +33,9 @@ export const login = async (req, res) => {
     const refreshExp = jwt.decode(refreshToken).exp;
 
     res.cookie("refreshToken", refreshToken, {
-      maxAge: refreshExp * 1000 - Date.now(),
+      maxAge: refreshExp * 1000,
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: true,
       sameSite: "none",
     });
 
