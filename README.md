@@ -4,6 +4,9 @@
 - users may attach tasks to their projects.
 - allows for user signup using username, email, password, or through github oauth.
 
+# LIVE DEPLOY:
+- https://perscholas-capstone-backend.onrender.com
+
 # installation
 - download the files and run `npm i` in your root file to install all dependencies.
 - Dependencies: bcrypt, cookie-parser, cors, dotenv, express, jsonwebtoken, mongoose, passport, passport-github2
@@ -18,10 +21,11 @@ REFRESHTTL=
 TOKENTTL=
 NODE_ENV="development" OR "production"
 PORT=8000
+ORIGIN= #front end url
 
 #github
 GITHUB_CLIENT_ID=
-GITHUB_CALLBACK_URL=http://localhost:8000/api/users/auth/github/callback
+GITHUB_CALLBACK_URL=<your backend address>/api/users/auth/github/callback
 GITHUB_CLIENT_SECRET=
 ~~~
 
