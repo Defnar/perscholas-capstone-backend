@@ -189,8 +189,6 @@ export const editCollaborator = async (req, res) => {
 
     const project = Object.assign(req.project, { user: projectUser });
 
-    console.log(project);
-
     await project.save();
   } catch (err) {
     console.log(err);
@@ -334,8 +332,6 @@ export const acceptJoinRequest = async (req, res) => {
     await req.project.save();
     await message.deleteOne();
     const projectOutput = await req.project.populate([{ path: "user.user" }]);
-
-    console.log(projectOutput);
 
     res.json({ message: "User successfully added", project: projectOutput });
   } catch (err) {

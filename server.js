@@ -9,19 +9,14 @@ const app = e();
 const port = process.env.PORT || 8000;
 
 app.use(e.json());
-app.use(cors(
-    {
-        origin: "http://localhost:5173",
-        credentials: true
-    }
-));
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 app.use(cookieParser());
 
-app.use("/", (req, res, next) => {
-    console.log(req.path);
-    console.log(req.params.url);
-    next();
-})
 app.use("/api", indexRoutes);
 
 db.once("open", () => {

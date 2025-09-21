@@ -74,8 +74,6 @@ export const logout = async (req, res) => {
 
   const refreshToken = req.cookies.refreshToken;
 
-  console.log(refreshToken);
-  console.log(jwt.verify(refreshToken, secret));
   try {
     if (refreshToken && jwt.verify(refreshToken, secret)) {
       const refreshExp = jwt.decode(refreshToken).exp;

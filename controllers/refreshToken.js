@@ -9,9 +9,7 @@ const tokenTTL = process.env.TOKENTTL;
 
 const refreshToken = (req, res) => {
   const refreshToken = req.cookies.refreshToken;
-  console.log(refreshToken);
   res.setHeader("Access-Control-Allow-Credentials", "true");
-  console.log(loggedOutRefresh.has(refreshToken))
   if (!refreshToken || loggedOutRefresh.has(refreshToken)) {
     return res.status(401).json({ error: "Invalid or missing refresh token" });
   }
