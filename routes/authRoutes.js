@@ -32,12 +32,14 @@ router.get(
       sameSite: "strict",
     });
 
-    res.redirect(`http://localhost:5173/auth/callback?oauth=success&token=${token}&userid=${user._id}`)
+    res.redirect(
+      `${process.env.ORIGIN}/auth/callback?oauth=success&token=${token}&userid=${user._id}`
+    );
   }
 );
 
 router.get("/github/failure", (req, res) => {
-  res.redirect("http://localhost:5173/auth/callback?oauth=failure")
+  res.redirect(`${process.env.ORIGIN}/auth/callback?oauth=failure`);
 });
 
 export default router;
