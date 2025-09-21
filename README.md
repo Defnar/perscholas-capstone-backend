@@ -33,6 +33,7 @@ GITHUB_CLIENT_SECRET=
 ### Login
 - POST `/api/users/login`
 - login is handled via email and password comparison.
+- returns an object `{token, user}`, as well as a refresh token in http cookies
 
 ### update user
 - PUT `/api/users/`
@@ -44,7 +45,7 @@ GITHUB_CLIENT_SECRET=
 
 ### Log out
 - POST `/api/users/logout`
-- logs a user out, moving their refresh token and access token to a map on the backend
+- logs a user out, moving their refresh token and access token to a logged out map on the backend
 
 ## Auth routes
 ### github authentication
@@ -54,11 +55,20 @@ GITHUB_CLIENT_SECRET=
 ### github callback authentication
 - GET `/api/users/auth/github/callback`
 - server-side callback of the authentication process.
+- open in new window on frontend, and grab the object `{token, user}` to send back to your frontend
 
-## Find a user
+##$ Find a user
 - GET `api/users/`
 - returns an array of users using input as a regex
-- returns _id, username, email, and message list
+- each user contains an _id, username, email, and message list
+
+### find a user by id
+- GET `/api/users/userId`
+- returns a single user, returned as a json object
+
+## get user messages
+- GET `/api/users/messages`
+- returns an array of messages attached to the user
 
 ## Message routes
 ### Accept an invite request
@@ -69,7 +79,7 @@ GITHUB_CLIENT_SECRET=
 - POST `/api/message/message:id/projects/:projectId`
 - allows you to request to join a project, also allowing the user to provide a message
 
-### Reject joinin a project
+### Reject joining a project
 - POST `/api/message/:messageId/reject`
 - rejects and removes an invite
 
@@ -118,6 +128,10 @@ GITHUB_CLIENT_SECRET=
   |Overdue|
   |Archive|
 
+### Request to join a project
+- POST `/api/projects/projectId/request`
+- Allows a user to request joining a project.  Requires user to be logged in
+
 ### project collaborators
 - PUT `/api/projects/projectId/collaborators`
 - Allows a user to edit collaborators, their permissions, and who is and is not a collaborator.
@@ -149,6 +163,15 @@ GITHUB_CLIENT_SECRET=
  - Allows anyone with permission to invite another user using their id.  Would recommend pairing this with the find user function
  - send a request using the key-value of `userId: id`
 
+
+### Accept a join request
+- PUT `/api/projects/projectId/accpt`
+- When a user requests to join, a message id is created.  Using the message id attached to the project and that user, send a request in the form of `{messageId: message_id}` to the api.  This will add the user to the project and delete that message
+
+### Reject a join request
+- PUT `/api/projects/projectId/reject`
+- Similar to above, but it just deletes the message from the system.  Could improve the system later to send a reject and accept response to the user, if I want to expand the message system
+
 ### Leave a project
 - POST `/api/projects/projectId/leave`
 - allows a user other than the owner to leave a project
@@ -167,6 +190,7 @@ GITHUB_CLIENT_SECRET=
 ### Delete a project
 - DELETE `/api/projects/projectId/`
 - deletes a project and associated tasks from the database
+
 
 
 ## Task Routes
