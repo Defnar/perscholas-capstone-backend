@@ -28,7 +28,7 @@ const refreshToken = (req, res) => {
       maxAge: refreshExp * 1000 - Date.now(),
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "none"
     });
 
     res.json({ token, user: data });
