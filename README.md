@@ -21,10 +21,11 @@ REFRESHTTL=
 TOKENTTL=
 NODE_ENV="development" OR "production"
 PORT=8000
+ORIGIN= #front end url
 
 #github
 GITHUB_CLIENT_ID=
-GITHUB_CALLBACK_URL=http://localhost:8000/api/users/auth/github/callback
+GITHUB_CALLBACK_URL=<your backend address>/api/users/auth/github/callback
 GITHUB_CLIENT_SECRET=
 ~~~
 
